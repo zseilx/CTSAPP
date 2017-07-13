@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+       <!--<meta name="viewport" content="width=350 height=495 initial-scale=1">-->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="js/IPSetting.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <style>
+        body{
+            background:#FFFFF6;
+            padding-left: 10px;
+        }
+       
+    
+
+        #MoveInfo{
+            margin-top: 20px;
+            width: 97%;
+            padding-top: 10px;
+            background-color: #202B37;
+            border-radius: 10px;
+            font-size: 25px;
+            font-weight: bold;
+            color: white;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        #MemberInfo{
+            
+            text-align: left;
+            padding-top: 5px;
+            padding-left: 30px;
+        }
+        #pointInfo{
+            text-align: right;
+            padding-top: 10px;
+             padding-bottom: 2px;
+            padding-right: 30px;
+            padding-left: 10px;
+        }
+        #shoppingTime{
+        
+            float: left;
+            text-align: left;
+            font-size: 15px;
+        }
+        #point{
+           
+            font-size: 30px;
+            font-weight: bold;
+        }
+        #couponBasket{
+            width: 45%;
+            height: 125px;
+            border: 1px solid black;
+            float: left;
+            margin-right: 7%;
+            margin-bottom: 30px;
+            text-align: center;
+            
+        }
+        #purchaseList{
+            width: 45%;
+            height: 125px;
+            border: 1px solid black;
+               float: left;
+                text-align: center;
+        }
+        #eventList{
+             width: 45%;
+            height: 125px;
+            border: 1px solid black;
+               float: left;
+               margin-right: 7%;
+                text-align: center;
+        }
+        #recommandList{
+             width: 45%;
+            height: 125px;
+            border: 1px solid black;
+               float: left;
+                text-align: center;
+        }
+
+          .product{
+            width: 96%;
+            height: 100px;
+            border: 0.2px solid black;
+            margin-bottom: 10px;
+        }
+
+
+        .productImg{
+            margin-left: 20px;
+            margin-top: 20px;
+            width: 60px;
+            height: 60px;
+            margin-right: 15px;
+            float: left;
+        }
+
+        .price{
+            float: right;
+            margin-top: -10px;
+            margin-right: 30px;
+        }
+        img{
+            margin-top: 10px;
+            width: 60px;
+            height: 60px;
+        }
+         .couponEdit{
+            background: #FFA7A7;
+            margin-right: 15px;
+            margin-top: -10px;
+            border: none;
+            width: 70px;
+            height: 30px;
+            float: right;
+        }
+        .searchProduct{
+            display: none;
+        }
+    </style>
+
+    <script>
+
+    function setId(id, point){
+        document.getElementById("name").innerHTML= id;
+        document.getElementById("point").innerHTML= point +"P";    
+    }
+    // 이곳이 바로 쿠폰 받는곳이다!!!!!!!!!!!!!!!!
+    function coupon(data){
+        // 여기 modal을 띄우세요.
+       
+         var couponData = JSON.parse(data);
+         $("#couponModal").modal(); 
+            $(".modal-body").empty();
+
+             $(".modal-body").append($("<div></div>").attr("data-id", couponData.coupon_code));
+             $("div[data-id="+ couponData.coupon_code+"]").append($("<p></p>").text(couponData.coupon_nm));
+             $("div[data-id="+ couponData.coupon_code+"]").append($("<p></p>").text(couponData.coupon_cntnts));
+             $("div[data-id="+ couponData.coupon_code+"]").append($("<p></p>").text(couponData.coupon_dscnt));
+             $("div[data-id="+ couponData.coupon_code+"]").append($("<button></button>").addClass("couponEdit").text("받기"));
+    }
+
+  
+
+    function searchProduct(s){
+       $(".section").hide(); 
+       $(".searchProduct").show(); 
+    $(".searchProduct").empty();
+
+        if(s == "no"){
+           
+            $(".searchProduct").append($("<p></p>").text("물품이 존재하지 않습니다."));
+        }
+        else{
+            var product = JSON.parse(s);
+            if(product.data[0] == null){
+              $(".searchProduct").append($("<p></p>").text("물품이 존재하지 않습니다."));
+            }else{
+                var length = product.data.length;
+                $(".searchProduct").css("padding", "20px")
+                for(var i=0; i <  length; i++){
+                    $(".searchProduct").append($("<div></div>").addClass("product").attr("data-product", product.data[i].goods_code));
+                    $(".product[data-product="+product.data[i].goods_code +"]").append($("<img />").attr("src", "img/product.png").addClass("productImg"));
+                    $(".product[data-product="+product.data[i].goods_code +"]").append($("<p></p>").text(product.data[i].goods_nm));
+                    $(".product[data-product="+product.data[i].goods_code +"]").append($("<p></p>").text(product.data[i].goods_pc+"원").addClass("price"));
+                }
+               
+            }
+
+
+        }
+
+    }
+
+    function event(bool){
+        if(bool == 'true'){
+            $(".section").show();
+            $(".searchProduct").hide();
+        }
+    }
+
+   
+
+    </script>
+</head>
+<body>
+<div class="section">
+    <div id="MoveInfo">
+        <div id="MemberInfo">
+            <span id="name">asd</span> 님,
+            <p>행복한 시간 보내세요!</p>
+            <p id="coupon"></p>
+        </div>
+        <div id="pointInfo">
+            <!--<span id="shoppingTime"> 쇼핑한 시간 : 00:00 </span>-->
+            <span id="point">0P</span>
+        </div>
+    </div>
+    <div>
+        <div id="couponBasket">
+             <img src="img/coupon.png">
+             <h4>쿠폰바구니</h4>
+        </div>
+        <div id="purchaseList">
+            <img src="img/list.png">
+            <h4>구매내역</h4>
+        </div>
+        <div id="eventList">
+            <img src="img/balloons.png">
+            <h4>이벤트</h4>
+        </div>
+        <div id="recommandList">
+            <img src="img/product.png">
+            <h4>추천상품</h4>
+        </div>
+    </div>
+</div>
+ <div class="modal fade" id="couponModal" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">쿠폰</h4>
+        </div>
+        <div class="modal-body">
+          
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+
+
+
+
+<div class="searchProduct">
+
+</div>
+
+  
+
+<script>
+     $(function(){
+
+         var name = $("#name").text();
+        sessionStorage.setItem('user_id', name);
+        $("#couponBasket").click(function(){
+            
+            window.location.href = "couponList.html";
+        }); 
+
+         $("#purchaseList").click(function(){
+            window.location.href = "purchaseList.html";
+        });
+        
+        $("#eventList").click(function(){
+            window.location.href = "eventList.html";
+        });
+
+        $("#recommandList").click(function(){
+            window.location.href = "recommendList.html";
+        });
+
+
+          $("#close").click(function(){
+            $("#couponModal").modal("hide"); 
+         });
+
+        $(document.body).on("click", ".couponEdit", function(){
+            var id = $("#name").text();
+            var coupon_code = $(this).parent().attr("data-id");
+
+            $.ajax({
+                    type: "GET",
+                    url: IPSetting()+"insertCoupon_hold",
+                    data: {
+                        user_id : id,
+                        coupon_code : coupon_code
+                    },
+                    dataType:"jsonp",
+                    success: function(data){
+                        if(data.result == "success"){
+                             $("#couponModal").modal("hide"); 
+                         }
+                    }
+            });
+
+        });
+
+                    
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="js/jquery-3.2.1.min.js"></script>
+    <script src="js/IPSetting.js"></script>
+    <title>이벤트</title>
+    <style>
+       body{
+            background:#FFFFF6;
+           
+        }
+        #title{
+             width: 96%;
+         
+            background: #202B37;
+            height: 55px;
+            color: white;
+            margin-bottom: 5px;
+            
+        }
+        #title > img{
+            position: relative;
+            top: -5%;
+            left: 30%;
+            margin: 10px 5px 10px 0px;
+            float: left;
+        }
+        #title > h2{
+             position: relative;
+            left: 33%;
+            line-height: 50px;
+        }
+        .event{
+            width: 96%;
+            height: 100px;
+            border: 0.2px solid black;
+            margin-bottom: 10px;
+        }
+        .eventDate{
+            float: right;
+            padding-right: 10%;
+        }
+
+        img{
+            margin-top: 10px;
+            margin-left: 10px;
+            margin-right: 15px;
+            float: left;
+        }
+  
+       
+    </style>
+     <script>
+        $(function(){
+       
+
+            $.ajax({
+                type: "GET",
+                url: IPSetting()+"eventList",
+                dataType:"jsonp",
+                success: function(data){
+
+                    var length = data.data.length;
+
+                    for(var i = 0; i<length; i++){
+
+                        var list = $("#list");
+
+                        list.append($('<div></div>').addClass("event").attr('data-id', data.data[i].bbsctt_code));
+                        $(".event[data-id="+data.data[i].bbsctt_code+"]").append($("<img />").attr("src", "img/calendar.png"));
+                        $(".event[data-id="+data.data[i].bbsctt_code+"]").append($("<p></p>").text(data.data[i].bbsctt_sj));
+                        $(".event[data-id="+data.data[i].bbsctt_code+"]").append($("<p></p>").addClass("eventDate").text(data.data[i].event_begin_de + "~" + data.data[i].event_end_de));
+
+                    }
+
+           
+                }
+            });
+        });
+       
+   </script>
+</head>
+<body>
+   <div id="title">
+     
+       <img src="img/balloons.png" width="40px" height="40px">
+       <h2>이벤트</h2>
+    
+   </div>
+
+   <div id="list">
+
+    </div>
+
+    <script>
+        $(document.body).on("click", ".event", function(){
+            
+            var bbsctt_code = $(this).attr("data-id");
+    
+            sessionStorage.setItem("bbsctt_code", bbsctt_code);
+
+            window.location.href = "eventDetail.html";
+
+
+        });       
+    
+    </script>
+</body>
+</html>

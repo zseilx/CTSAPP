@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="js/jquery-3.2.1.min.js"></script>
+    <script src="js/IPSetting.js"></script>
+
+
+    <title>구매내역</title>
+     <style>
+       body{
+            background:#FFFFF6;
+        
+        }
+     
+        #title{
+             width: 97%;
+            background: #202B37;
+            height: 55px;
+            color: white;
+            margin-bottom: 5px;
+            
+        }
+        #title > img{
+            position: relative;
+            top: -5%;
+            left: 27%;
+            margin: 10px 5px 10px 0px;
+            float: left;
+        }
+        #title > h2{
+            position: relative;
+            left: 30%;
+            line-height: 50px;
+        }
+        #dateButton{
+          width: 97%;
+            background-color: #202B37;
+            text-align: center;
+            line-height: 40px;
+             height: 40px;
+             margin-bottom: 10px;
+        }
+        #dateButton > button{
+            width: 30%;
+            height: 30px;
+         
+          display: inline-block;
+            font-size: 15px;
+            background-color: white;
+            border:none;
+            border-radius: 3px;
+        }
+
+        .purchase{
+            width: 96%;
+            height: 100px;
+            border: 0.2px solid black;
+            margin-bottom: 10px;
+        }
+        .purchaseWay{
+            margin-top: -2px;
+            float: right;
+            padding-right: 5%;
+        }
+
+        .purchaseImg{
+            
+            width: 60px;
+            height: 60px;
+            margin-top: 10px;
+            margin-left: 10px;
+            margin-right: 15px;
+            float: left;
+        }
+        .purchaseDetail{
+            border: 0.5px solid black;
+            width: 96%;
+            display: none;
+            height: 450px;
+            overflow: scroll;
+            
+        }
+        hr{
+            margin-top : 40px;
+           visibility: hidden;
+            
+        }
+
+        #billOne th, td{
+            width: 120px;
+            text-align: center;
+        }
+
+        #billOne th{
+
+            border-bottom: 0.5px solid black;
+        }
+      
+
+    </style>
+    <script>
+        $(function(){
+
+              var id = sessionStorage.getItem('user_id');
+            
+              billList(id, 15);
+
+
+
+            $("#fifteen").click(function(){
+
+                 $(".purchase").remove();
+                 $(".purchaseDetail").hide();
+                 billList(id, 15);
+            });
+
+            $("#month").click(function(){
+                $(".purchase").remove();
+                $(".purchaseDetail").hide();
+             
+                 billList(id, 30);
+            });
+
+            $("#threeMonth").click(function(){
+                $(".purchase").remove();
+                $(".purchaseDetail").hide();
+                 billList(id, 90);
+            });
+
+        
+       
+              
+        });
+
+         function billList(id, day){
+
+             $.ajax({
+                type: "GET",
+                url: IPSetting()+"billList",
+                data: {
+                    user_id : id,
+                    day: day
+                },
+                dataType:"jsonp",
+                success: function(data){
+
+                    var length = data.data.length;
+
+                    for(var i = 0; i<length; i++){
+
+                        var list = $("#list");
+
+                        list.append($('<div></div>').addClass("purchase").attr('data-id', data.data[i].bill_code));
+                        $(".purchase[data-id="+data.data[i].bill_code+"]").append($("<img />").attr("src", "img/list.png").addClass("purchaseImg"));
+                        $(".purchase[data-id="+data.data[i].bill_code+"]").append($("<h4></h4>").attr('bill_issu_de', data.data[i].bill_issu_de).text(data.data[i].bill_issu_de+" 구매정보"));
+                        $(".purchase[data-id="+data.data[i].bill_code+"]").append($("<p></p>").addClass("purchaseWay")
+                        .attr('bill_totamt',  data.data[i].bill_totamt).text(data.data[i].bill_totamt + "원"));
+
+                    }
+
+           
+                }
+            });
+
+         }
+       
+   </script>
+</head>
+<body>
+  <div id="titleWrap">
+    <div id="title">
+        <img src="img/list.png" width="40px" height="40px">
+        <h2>구매내역</h2>
+    </div>
+   
+     <div id="dateButton">
+        <button id="fifteen">15일</button>
+        <button id="month">1개월</button>
+        <button id="threeMonth">3개월</button>
+    </div>
+
+
+    <div id="list">
+
+        <div class="purchaseDetail">
+            <img src="img/list.png" class="purchaseImg" />
+            <h3>2017-05-13 구매 상세 내역</h3>
+            <hr>
+           
+            <table id="billOne">
+               
+            </table>
+           
+        </div>
+
+
+    
+        
+
+    </div>
+
+
+     
+
+  </div>
+
+    <script>
+        $("#dateButton > button").click(function(){
+            $(this).css("background-color", "#FAE0D4");
+        
+            $(this).siblings().css("background-color", "white");
+            
+        });
+
+         $(document.body).on("click", ".purchase", function(){
+            
+            var id = sessionStorage.getItem("user_id");
+          
+            $('.purchase').remove();
+            $("#title > h2 ").text("구매 상세 내역");
+            $("#title > h2 ").css("left", "23%");
+            $("#title > img").css("left", "20%");
+            var bill_code = $(this).attr('data-id');
+            var bill_issu_de = $(this).find("h4").attr('bill_issu_de');
+            var bill_totamt = $(this).find("p").attr('bill_totamt');
+
+
+            var table = $("#billOne");
+            $("#billOne").children().remove();
+
+
+          $.ajax({
+                type: "GET",
+                url: IPSetting()+"billOne",
+                data: {
+                    bill_code : bill_code
+                },
+                dataType:"jsonp",
+                async: false,
+                success: function(data){
+
+                     $(".purchaseDetail").show();
+                     $(".purchaseDetail > h3").text(bill_issu_de+" 구매 상세 내역");
+
+                    table.append($('<tr></tr>').addClass('add').attr('data', '0'));
+                    $('.add[data=0]').append($('<th></th>').text("상품 명")).append($('<th></th>').text("수량"))
+                    .append($('<th></th>').text("쿠폰적용가"));
+                    $('.add[data=0]').append($('<th></th>').text("상품 가격"));
+
+                    var length = data.data.length;
+
+                    for(var i = 0; i < length; i++){
+
+                        
+                        table.append($('<tr></tr>').addClass('add').attr('i', i));
+                        $('.add[i='+i+']').append($('<td></td>').text(data.data[i].goods_nm));
+                        $('.add[i='+i+']').append($('<td></td>').text(data.data[i].purchgoods_qy));
+                        $('.add[i='+i+']').append($('<td></td>').text(data.data[i].COUPON_DSCNT));
+                        $('.add[i='+i+']').append($('<td></td>').text(data.data[i].price));
+
+                    }
+
+                }
+            });
+
+
+            $.ajax({
+                type:"GET",
+                url: IPSetting() + "settleInfo",
+                data : {
+                    user_id : id,
+                    bill_code : bill_code
+                },
+                dataType : "jsonp",
+                success: function(data){
+
+                    var length = data.data.length;
+
+                
+                    for(var i = 0; i < length; i++){
+
+                        
+                        table.append($('<tr></tr>').addClass('add').attr('data', data.data[i].setle_mth_code));
+                        $('.add[data='+data.data[i].setle_mth_code+']').append($('<td></td>').attr('colspan', '2').text("결제 수단"));
+                        $('.add[data='+data.data[i].setle_mth_code+']').append($('<td></td>').text(data.data[i].setle_mth_nm));
+                        $('.add[data='+data.data[i].setle_mth_code+']').append($('<td></td>').text(data.data[i].stprc));
+
+
+                    }
+                
+
+                     table.append($('<tr></tr>').addClass('add').attr('data', 'totalPrice'));
+                     $('.add[data=totalPrice]').append($('<td></td>').attr('colspan', '2').text("상품 총 가격"));
+                     $('.add[data=totalPrice]').append($('<td></td>').text(bill_totamt));
+
+
+                }
+
+            });
+            
+
+
+        });    
+
+
+
+
+    </script>
+</body>
+</html>

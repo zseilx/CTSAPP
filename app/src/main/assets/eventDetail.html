@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="js/jquery-3.2.1.min.js"></script>
+    <script src="js/IPSetting.js"></script>
+    <title>이벤트 상세내역</title>
+    <style>
+       body{
+            background:#FFFFF6;
+           
+        }
+        #title{
+             width: 96%;
+         
+            background: #202B37;
+            height: 55px;
+            color: white;
+            margin-bottom: 5px;
+            
+        }
+        #title > img{
+            position: relative;
+            top: -5%;
+            left: 15%;
+            margin: 10px 5px 10px 0px;
+            float: left;
+        }
+        #title > h2{
+             position: relative;
+            left: 17%;
+            line-height: 50px;
+        }
+        .eventOne{
+            width: 96%;
+            height: 500px;
+            border: 0.2px solid black;
+            margin-bottom: 10px;
+        }
+
+        .eventDate{
+            float: right;
+            padding-right: 10%;
+        }
+        .eventInfo{
+            height: 100px;
+        }
+
+        hr{
+            width:95%;
+            text-align: center;
+        }
+
+        .eventImg{
+            margin-top: 10px;
+            margin-left: 10px;
+            width:50px;
+            height:50px;
+            margin-right: 15px;
+            float: left;
+        }
+
+        .eventContent{
+            
+            width: 95%;
+            height: 350px;
+            border: 1px solid black;
+            position: relative;
+            left: 2%;
+
+            overflow: scroll;
+           
+        }
+  
+       
+    </style>
+     <script>
+        $(function(){
+            
+            var bbsctt_code =  sessionStorage.getItem("bbsctt_code");
+
+            $.ajax({
+                type: "GET",
+                url: IPSetting()+"eventOne",
+                data :{
+                    bbsctt_code : bbsctt_code
+                },
+                dataType:"jsonp",
+                success: function(data){
+
+                    console.log(data);
+
+            
+                        var list = $("#list");
+
+                        list.append($('<div></div>').addClass("eventInfo").attr('data-id', data.bbsctt_code));
+                        $(".eventInfo[data-id="+data.bbsctt_code+"]").append($("<img />").attr("src", "img/list.png").addClass('eventImg'));
+                        $(".eventInfo[data-id="+data.bbsctt_code+"]").append($("<h2></h2>").text(data.bbsctt_sj));
+                        $(".eventInfo[data-id="+data.bbsctt_code+"]").append($("<p></p>").addClass("eventDate").text(data.event_begin_de + "~" + data.event_end_de));
+                        list.append($('<hr />'));
+                        list.append($('<div></div>').addClass('eventContent').text(data.bbsctt_cn));
+
+                
+
+           
+                }
+            });
+        });
+       
+   </script>
+</head>
+<body>
+   <div id="title">
+     
+       <img src="img/balloons.png" width="40px" height="40px">
+       <h2>이벤트 상세 내역</h2>
+    
+   </div>
+
+   <div id="list" class="eventOne">
+        
+    </div>
+</body>
+</html>
