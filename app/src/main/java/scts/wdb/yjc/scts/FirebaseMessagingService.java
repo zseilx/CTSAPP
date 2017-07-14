@@ -19,6 +19,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
     private static final String TAG = "FirebaseMsgService";
 
     private String msg;
+    private String data;
 
     // [START receive_message]
     @Override
@@ -38,24 +39,27 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
         }
 
         msg = remoteMessage.getNotification().getBody();
+        data = remoteMessage.getData().get("coupon");
+        Log.d("coupon", data);
 
         // Also if you intend on generating your own notifications as a result of a received FCM
         // message, here is where that should be initiated. See sendNotification method below.
 
         // [END receive_message]
 
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, WebViewMain.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-                new Intent(this, MainActivity.class), 0);
+                new Intent(this, WebViewMain.class), 0);
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this).setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle("FCM")
+                .setContentTitle("SCTS")
                 .setContentText(msg)
                 .setAutoCancel(true)
                 .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
-                .setVibrate(new long[]{1, 1000});
+                .setVibrate(new long[]{1, 1000})
+                .setContentIntent(contentIntent);
 
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);

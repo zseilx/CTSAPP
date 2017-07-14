@@ -51,14 +51,18 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        FirebaseInstanceId.getInstance().getToken();
+
     }
 
+/*
    @Override
     protected void onResume() {
         super.onResume();
         // 블루투스 권한 및 활성화 코드
        SystemRequirementsChecker.checkWithDefaultDialogs(this);
     }
+*/
 
   protected void test() {
 
@@ -97,8 +101,6 @@ public class MainActivity extends AppCompatActivity {
                 user_id = user_id_input.getText().toString();
                 user_pw_input = (EditText) findViewById(R.id.userPw);
                 user_pw = user_pw_input.getText().toString();
-
-                FirebaseInstanceId.getInstance().getToken();
 
                 token = FirebaseInstanceId.getInstance().getToken();
                 Log.d("FCM_Token", token);
