@@ -1,6 +1,7 @@
 package scts.wdb.yjc.scts;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -22,6 +23,8 @@ import android.widget.Toast;
 import com.estimote.sdk.BeaconManager;
 import com.google.gson.JsonObject;
 
+import java.io.File;
+
 import scts.wdb.yjc.scts.bean.IPSetting;
 import scts.wdb.yjc.scts.hardwaremanager.BeaconM;
 import scts.wdb.yjc.scts.hardwaremanager.SensorM;
@@ -37,8 +40,9 @@ import scts.wdb.yjc.scts.hardwaremanager.SensorM;
                 private SharedPreferences sp;
                 private String str;
                 private String point;
+                private String coupon;
                 private SharedPreferences.Editor editor;
-                private String finish;
+
 
                 private EditText productInput;
                 private String productName;
@@ -67,6 +71,16 @@ import scts.wdb.yjc.scts.hardwaremanager.SensorM;
                     webView.getSettings().setUseWideViewPort(true);
                     webView.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NORMAL);
 
+                    webView.getSettings().setDomStorageEnabled(true);
+                    webView.getSettings().setDatabaseEnabled(true);
+
+                    File dir = getCacheDir();
+                    if (!dir.exists()) {
+                        dir.mkdirs();
+                    }
+                    webView.getSettings().setAppCachePath(dir.getPath());
+                    webView.getSettings().setAppCacheEnabled(true);
+
 
                     webView.getSettings().setJavaScriptEnabled(true);
                     webView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
@@ -76,6 +90,7 @@ import scts.wdb.yjc.scts.hardwaremanager.SensorM;
 
                     webView.setWebViewClient(new WebViewClientTest());
                     webView.loadUrl(MAIN_URL);
+
 
                     productInput = (EditText) findViewById(R.id.productInput);
 
@@ -102,10 +117,6 @@ import scts.wdb.yjc.scts.hardwaremanager.SensorM;
                     });
 
 
-
-
-
-
                     /****************************************************** 가속도 센서 활용 테스트 *********************************************************************/
                     sensorM = new SensorM(this);
 
@@ -117,8 +128,6 @@ import scts.wdb.yjc.scts.hardwaremanager.SensorM;
                     beaconM.SetContext(this);
                     beaconM.BeaconSetListner();
                     beaconM.BeaconConnect();
-
-
 
                 }
 
@@ -179,69 +188,12 @@ import scts.wdb.yjc.scts.hardwaremanager.SensorM;
                 }
 
 
-
-   /* // 뒤로 가기 버튼
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-
-        if((keyCode == KeyEvent.KEYCODE_BACK)){
-            webView.loadUrl("javascript:event('true')");
-        }
-
-
-        if ((keyCode == KeyEvent.KEYCODE_BACK) && webView.canGoBack()) {
-
-            webView.goBack();
-
-            return true;
-        }
-
-        if((keyCode == KeyEvent.KEYCODE_BACK) && (webView.canGoBack() == false)){
-
-
-
-                if(false == false){
-
-
-
-
-                }else{
-
-                    //다이아로그박스 출력
-                    new AlertDialog.Builder(this)
-                            .setTitle("프로그램 종료")
-                            .setMessage("프로그램을 종료하시겠습니까?")
-                            .setPositiveButton("예", new DialogInterface.OnClickListener(){
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-
-                                    beaconM.onDestroy();
-                                    editor = sp.edit();
-                                    editor.remove("user_id");
-                                    moveTaskToBack(true);
-                                    Process.killProcess(Process.myPid());
-
-                                }
-                            })
-                            .setNegativeButton("아니오",  null).show();
-                }
-
-
-
-
-
-        }
-        return super.onKeyDown(keyCode, event);
-    }*/
-
-
-
                 class JSObject {
-                    @JavascriptInterface
-                    public void sampleAction(String str) {
+                        @JavascriptInterface
+                        public void sampleAction(String str) {
 
-                        finish = str;
 
-                    }
+                        }
 
 
                 }
@@ -259,6 +211,17 @@ import scts.wdb.yjc.scts.hardwaremanager.SensorM;
 
 
                         webView.loadUrl("javascript:setId('"+str+"', '"+point+"')");
+
+                        if(getIntent().getExtras() != null){
+
+                            coupon = getIntent().getExtras().getString("coupon").toString();
+
+                            webView.loadUrl("javascript:couponHere("+ coupon +")");
+
+                        }else {
+                            Log.d("log", "no");
+                        }
+
 
                     }
                 }

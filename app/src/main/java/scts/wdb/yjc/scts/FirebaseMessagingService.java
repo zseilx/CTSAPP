@@ -4,11 +4,20 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.RingtoneManager;
+import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
+import com.estimote.sdk.internal.utils.L;
+import com.estimote.sdk.repackaged.gson_v2_3_1.com.google.gson.JsonArray;
+import com.estimote.sdk.repackaged.gson_v2_3_1.com.google.gson.JsonParser;
 import com.google.firebase.messaging.RemoteMessage;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * Created by bon on 2017-07-13.
@@ -17,6 +26,8 @@ import com.google.firebase.messaging.RemoteMessage;
 public class FirebaseMessagingService extends com.google.firebase.messaging.FirebaseMessagingService {
 
     private static final String TAG = "FirebaseMsgService";
+
+    private SharedPreferences sp;
 
     private String msg;
     private String data;
@@ -40,6 +51,8 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
 
         msg = remoteMessage.getNotification().getBody();
         data = remoteMessage.getData().get("coupon");
+
+
         Log.d("coupon", data);
 
         // Also if you intend on generating your own notifications as a result of a received FCM
@@ -48,10 +61,21 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
         // [END receive_message]
 
         Intent intent = new Intent(this, WebViewMain.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+        JSONObject json = new JSONObject();
+        try {
+            json.put("coupon", data);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+        intent.putExtra("coupon", json.toString());
 
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-                new Intent(this, WebViewMain.class), 0);
+                intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this).setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle("SCTS")

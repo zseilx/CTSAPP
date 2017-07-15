@@ -104,7 +104,7 @@
     <script>
         $(function(){
 
-              var id = sessionStorage.getItem('user_id');
+              var id = localStorage.getItem('user_id');
             
               billList(id, 15);
 
@@ -217,7 +217,7 @@
 
          $(document.body).on("click", ".purchase", function(){
             
-            var id = sessionStorage.getItem("user_id");
+            var id = localStorage.getItem("user_id");
           
             $('.purchase').remove();
             $("#title > h2 ").text("구매 상세 내역");

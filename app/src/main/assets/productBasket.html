@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <script src="js/jquery-3.2.1.min.js"></script>
     <script src="js/IPSetting.js"></script>
-    <title>추천상품</title>
+    <title>장바구니</title>
     <style>
        body{
             background:#FFFFF6;
@@ -69,7 +69,7 @@
 
     $(document).ready(function(){
 
-        var id = sessionStorage.getItem("user_id");
+        var id = localStorage.getItem("user_id");
 
         $.ajax({
             type:"GET",
@@ -105,8 +105,8 @@
 <div></div>
    <div id="title">
      
-       <img src="img/product.png" width="40px" height="40px">
-       <h2>추천상품</h2>
+       <img src="img/nfc.png" width="40px" height="40px">
+       <h2>NFC 장바구니</h2>
     
    </div>
 

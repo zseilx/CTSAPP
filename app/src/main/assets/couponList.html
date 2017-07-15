@@ -76,7 +76,7 @@
 
     $(document).ready(function(){
 
-        var id = sessionStorage.getItem("user_id");
+        var id = localStorage.getItem("user_id");
 
         $.ajax({
             type:"GET",
@@ -127,7 +127,7 @@
 
    <script>
     $(document.body).on("click", ".couponDel", function(){
-        var id = sessionStorage.getItem("user_id");
+        var id = localStorage.getItem("user_id");
         var coupon_code = $(this).parent().attr("data-id");
         var removeTarget = $(this).parent();
 
