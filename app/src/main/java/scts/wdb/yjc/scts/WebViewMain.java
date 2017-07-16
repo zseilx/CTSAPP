@@ -1,10 +1,19 @@
 package scts.wdb.yjc.scts;
 
+import android.app.Activity;
+import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.nfc.NdefMessage;
+import android.nfc.NdefRecord;
+import android.nfc.NfcAdapter;
+import android.nfc.Tag;
+import android.nfc.tech.NfcF;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.os.Process;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -21,9 +30,17 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.estimote.sdk.BeaconManager;
+import com.estimote.sdk.cloud.model.Device;
 import com.google.gson.JsonObject;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.util.Arrays;
 
 import scts.wdb.yjc.scts.bean.IPSetting;
 import scts.wdb.yjc.scts.hardwaremanager.BeaconM;
@@ -51,6 +68,14 @@ import scts.wdb.yjc.scts.hardwaremanager.SensorM;
 
                 private final long	FINSH_INTERVAL_TIME    = 2000;
                 private long		backPressedTime        = 0;
+
+                private NfcAdapter mAdapter;
+
+                private PendingIntent mPendingIntent;
+
+                private IntentFilter[] mFilters;
+                private String[][] mTechLists;
+
 
 
 
@@ -100,15 +125,24 @@ import scts.wdb.yjc.scts.hardwaremanager.SensorM;
                         @Override
                         public void onClick(View v) {
 
-                            productName = productInput.getText().toString();
+                            try {
+                                productName = URLDecoder.decode(productInput.getText().toString(), "UTF-8");
 
-                            if(productName.equals("")){
-                                webView.loadUrl("javascript:searchProduct('no')");
+                                Log.d("productNameName", productName);
 
-                            }else{
-                                NetworkTask networkTask = new NetworkTask();
-                                networkTask.execute(productName);
+                                if(productName.equals("")){
+                                    webView.loadUrl("javascript:searchProduct('no')");
+
+                                }else{
+                                    NetworkTask networkTask = new NetworkTask();
+                                    networkTask.execute(productName);
+                                }
+
+                            } catch (UnsupportedEncodingException e) {
+                                e.printStackTrace();
                             }
+
+
 
                             //testCoupon();
 
@@ -128,6 +162,31 @@ import scts.wdb.yjc.scts.hardwaremanager.SensorM;
                     beaconM.SetContext(this);
                     beaconM.BeaconSetListner();
                     beaconM.BeaconConnect();
+
+                    mAdapter = NfcAdapter.getDefaultAdapter(this);
+
+                    if(mAdapter == null){
+                        Toast.makeText(getApplicationContext(), "사용하기 전에 NFC 활성화하세요", Toast.LENGTH_LONG);
+                    }else{
+                        Toast.makeText(getApplicationContext(), "NFC 태그를 스캔하세요", Toast.LENGTH_LONG);
+                    }
+
+                    Intent targetIntent = new Intent(getApplicationContext(), WebViewMain.class);
+
+                    targetIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+                    mPendingIntent = PendingIntent.getActivity(this, 0, targetIntent, 0);
+
+                    IntentFilter ndef = new IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED);
+
+                    try {
+                        ndef.addDataType("*/*");
+                    } catch (IntentFilter.MalformedMimeTypeException e) {
+                        e.printStackTrace();
+                    }
+
+                    mFilters = new IntentFilter[] {ndef ,};
+                    mTechLists = new String[][] { new String[] {NfcF.class.getName()}};
 
                 }
 
@@ -187,13 +246,93 @@ import scts.wdb.yjc.scts.hardwaremanager.SensorM;
 
                 }
 
+                @Override
+                public void onNewIntent(Intent intent){
+                    String action = intent.getAction();
+
+                    Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
+
+                    Parcelable[] data = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
+
+                    if(data != null){
+                        for(int i = 0; i < data.length; i++){
+                            NdefRecord[] recs = ((NdefMessage)data[i]).getRecords();
+
+                            for(int j = 0; j < recs.length; j++){
+                                if(recs[j].getTnf() == NdefRecord.TNF_WELL_KNOWN && Arrays.equals(recs[j].getType(), NdefRecord.RTD_TEXT)){
+
+                                    byte[] payload = recs[j].getPayload();
+                                    String textEncoding = ((payload[0] & 0200) == 0) ? "UTF-8" : "UTF-16";
+                                    int langCodeLen = payload[0] & 0077;
+
+                                    String s = new String(payload, langCodeLen+1, payload.length - langCodeLen -1);
+
+                                    Log.d( "message Come", s);
+
+                                    sp = getSharedPreferences("test", 0);
+                                    String user_id  = sp.getString("user_id", "");
+                                    String bhf_code = sp.getString("bhf_code", "2");
+
+                                    JSONObject json = new JSONObject();
+                                    try {
+                                        json.put("goods_code", s);
+                                        json.put("bhf_code", bhf_code);
+                                        json.put("user_id", user_id);
+
+                                        NetworkTask2 networkTask2 = new NetworkTask2();
+                                        networkTask2.execute(json.toString());
+
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+
+
+
+
+
+
+                                }
+                            }
+                        }
+                    }
+
+                }
+
+                @Override
+                public  void onResume(){
+
+                    super.onResume();
+
+                    if(mAdapter != null){
+                        mAdapter.enableForegroundDispatch(this, mPendingIntent, mFilters, mTechLists);
+                    }
+
+                }
+
+                @Override
+                public  void onPause(){
+                    super.onPause();
+
+                    if(mAdapter != null){
+                        mAdapter.disableForegroundDispatch(this);
+                    }
+                }
 
                 class JSObject {
+
+
                         @JavascriptInterface
-                        public void sampleAction(String str) {
+                        public void nfcAction() {
+
+                            Log.d("nfc 왔어요", "헤헷");
+
 
 
                         }
+
+
+
+
 
 
                 }
@@ -238,32 +377,77 @@ import scts.wdb.yjc.scts.hardwaremanager.SensorM;
                         // bean 안에 있는 ip 셋팅 정보를 꼭 바꾸도록 할 것
                         HttpClient.Builder http = new HttpClient.Builder("POST", IPSetting.getIpAddress() + "productSearch");
 
+
                         http.addOrReplace("productName", json[0]);
 
-            Log.d("param", json[0]);
+                        Log.d("param", json[0]);
 
-            // HTTP 요청 전송
-            HttpClient post = http.create();
+                        // HTTP 요청 전송
+                        HttpClient post = http.create();
 
-            post.request();
-
-
-            // 응답 상태코드 가져오기
-            int statusCode = post.getHttpStatusCode();
-
-            // 응답 본문 가져오기
-            String body = post.getBody();
+                        post.request();
 
 
-            return body;
-        }
+                        // 응답 상태코드 가져오기
+                        int statusCode = post.getHttpStatusCode();
 
-        protected void onPostExecute(String s){
+                        // 응답 본문 가져오기
+                        String body = post.getBody();
 
-        Log.i("json", s);
-            webView.loadUrl("javascript:searchProduct('" + s + "')");
 
-        }
+                        return body;
+                    }
 
-    }
+                    protected void onPostExecute(String s){
+
+                    Log.i("json", s);
+                        webView.loadUrl("javascript:searchProduct('" + s + "')");
+
+                    }
+                }
+
+
+
+
+                private class NetworkTask2 extends AsyncTask<String, String, String> {
+
+                    protected  void onPreExcute(){
+
+                        super.onPreExecute();
+                    }
+
+                    @Override
+                    protected String doInBackground(String... json) {
+                        // bean 안에 있는 ip 셋팅 정보를 꼭 바꾸도록 할 것
+                        HttpClient.Builder http = new HttpClient.Builder("POST", IPSetting.getIpAddress() + "oneBasketInfo");
+
+                        http.addOrReplace("basket", json[0]);
+
+                        Log.d("param", json[0]);
+
+                        // HTTP 요청 전송
+                        HttpClient post = http.create();
+
+                        post.request();
+
+
+                        // 응답 상태코드 가져오기
+                        int statusCode = post.getHttpStatusCode();
+
+                        // 응답 본문 가져오기
+                        String body = post.getBody();
+
+
+                        return body;
+                    }
+
+                    protected void onPostExecute(String s){
+
+                        Log.i("basketInfo", s);
+
+                        webView.loadUrl("file:///android_asset/productBasket.html");
+
+
+                    }
+                }
 }

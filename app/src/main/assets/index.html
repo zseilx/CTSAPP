@@ -140,7 +140,8 @@
     function setId(id, point){
         document.getElementById("name").innerHTML= id;
         document.getElementById("point").innerHTML= point +"P"; 
-        localStorage.setItem("user_id", id);   
+        localStorage.setItem("user_id", id);
+        localStorage.setItem("bhf_code", "2");   
     }
     // 이곳이 바로 쿠폰 받는곳이다!!!!!!!!!!!!!!!!
     function coupon(data){
@@ -160,42 +161,16 @@
   
 
     function searchProduct(s){
-       $(".section").hide(); 
-       $(".searchProduct").show(); 
-       $(".searchProduct").empty();
 
-        if(s == "no"){
-           
-            $(".searchProduct").append($("<p></p>").text("물품이 존재하지 않습니다."));
+        if(s == 'no'){
+            localStorage.setItem("searchProduct", 'no');
+        }else{
+             localStorage.setItem("searchProduct", s);
         }
-        else{
-            var product = JSON.parse(s);
-            if(product.data[0] == null){
-              $(".searchProduct").append($("<p></p>").text("물품이 존재하지 않습니다."));
-            }else{
-                var length = product.data.length;
-                $(".searchProduct").css("padding", "20px")
-                for(var i=0; i <  length; i++){
-                    $(".searchProduct").append($("<div></div>").addClass("product").attr("data-product", product.data[i].goods_code));
-                    $(".product[data-product="+product.data[i].goods_code +"]").append($("<img />").attr("src", "img/product.png").addClass("productImg"));
-                    $(".product[data-product="+product.data[i].goods_code +"]").append($("<p></p>").text(product.data[i].goods_nm));
-                    $(".product[data-product="+product.data[i].goods_code +"]").append($("<p></p>").text(product.data[i].goods_pc+"원").addClass("price"));
-                }
-               
-            }
-
-
-        }
+       
+       window.location.href = "searchProduct.html";
 
     }
-
-    function event(bool){
-        if(bool == 'true'){
-            $(".section").show();
-            $(".searchProduct").hide();
-        }
-    }
-
 
 
     function couponHere(data){
@@ -234,6 +209,8 @@
         
     }
 
+
+
    
 </script>
 </head>
@@ -241,7 +218,7 @@
 <div class="section">
     <div id="MoveInfo">
         <div id="MemberInfo">
-            <span id="name">asd</span> 님,
+            <span id="name">user1</span> 님,
             <p>행복한 시간 보내세요!</p>
             <p id="coupon"></p>
         </div>
@@ -315,17 +292,9 @@
   </div>
 
 
-
-
-
-<div class="searchProduct">
-
-</div>
-
-  
-
 <script>
-
+        localStorage.setItem("user_id", "user1");
+        localStorage.setItem("bhf_code", "2");
         $("#couponBasket").click(function(){
             
             window.location.href = "couponList.html";
@@ -341,11 +310,12 @@
 
         $("#productBasket").click(function(){
             window.location.href = "productBasket.html";
+            window.sampleAndroid.nfcAction();
         });
 
 
           $("#close").click(function(){
-            $("#couponModal").modal("hide"); 
+            $("#couponModal").modal("hide");        
          });
 
         $(document.body).on("click", ".couponEdit", function(){

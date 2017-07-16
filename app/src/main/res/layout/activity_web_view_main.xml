@@ -29,7 +29,8 @@
                 android:background="@color/common_google_signin_btn_text_dark_pressed"
                 android:ems="10"
                 android:inputType="textPersonName"
-                android:textColor="@color/common_google_signin_btn_text_dark" />
+                android:textColor="@color/common_google_signin_btn_text_dark"
+                android:privateImeOptions="defaultInputmode=korean"/>
 
 
             <Button

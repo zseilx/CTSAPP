@@ -38,7 +38,7 @@
 
         .recommandProduct{
             width: 96%;
-            height: 100px;
+            height: 120px;
             border: 0.2px solid black;
             margin-bottom: 10px;
         }
@@ -55,8 +55,28 @@
 
         .price{
             float: right;
-            margin-top: -10px;
+            margin-top: -40px;
             margin-right: 30px;
+        }
+
+        .basketDel{
+            background: #FFA7A7;
+            border: none;
+            margin-right: 20px;
+            width: 70px;
+            height: 30px;
+            float: right;
+        }
+
+        #deliveryBasket{
+
+             width: 97%;
+            background: #202B37;
+            height: 45px;
+            color: white;
+            margin-bottom: 15px;
+            text-align: center;
+            
         }
 
      
@@ -65,17 +85,17 @@
     </style>
     <script>
 
-     
-
     $(document).ready(function(){
 
         var id = localStorage.getItem("user_id");
+        var bhf_code = localStorage.getItem("bhf_code");
 
         $.ajax({
             type:"GET",
-            url:IPSetting()+"recommandProduct",
+            url:IPSetting()+"basketInfo",
             data:{
-                user_id : id
+                user_id : id,
+                bhf_code : bhf_code
             },
             dataType:"jsonp",
             success : function(data){
@@ -89,12 +109,47 @@
                         list.append($('<div></div>').addClass("recommandProduct").attr('data-id', data.data[i].goods_code));
                         $(".recommandProduct[data-id="+data.data[i].goods_code +"]").append($("<img />").attr("src", "img/product.png").addClass("recommandImg"));
                         $(".recommandProduct[data-id="+data.data[i].goods_code +"]").append($("<p></p>").text(data.data[i].goods_nm));
-                        $(".recommandProduct[data-id="+data.data[i].goods_code +"]").append($("<p></p>").text(data.data[i].goods_pc+"원").addClass("price"));
+                        $(".recommandProduct[data-id="+data.data[i].goods_code +"]").append($("<div></div>").addClass("basket").attr("data-id", data.data[i].goods_code));
+                        $(".basket[data-id="+data.data[i].goods_code +"]").append($("<button></button>").addClass("plus").text("+"));
+                        $(".basket[data-id="+data.data[i].goods_code +"]").append($("<span></span>").attr("basket_qy", data.data[i].basket_qy).text(" "+data.data[i].basket_qy+" "));
+                        $(".basket[data-id="+data.data[i].goods_code +"]").append($("<button></button>").addClass("minus").text("-"));
+                        $(".basket[data-id="+data.data[i].goods_code +"]").append($("<input type='checkbox' class='goodsCheck'/>"));
+                        $(".recommandProduct[data-id="+data.data[i].goods_code +"]").append($("<p></p>").attr("goods_pc",data.data[i].goods_pc )
+                        .text((parseInt(data.data[i].goods_pc) * parseInt(data.data[i].basket_qy))+"원").addClass("price"));
+                         $(".recommandProduct[data-id="+data.data[i].goods_code +"]").append($("<button></button>").addClass("basketDel").text("삭제"));
 
                     }
 
+
+                
+
             }
         });
+
+        var checkDelivery = $("input[name=deliveryAddr]:checked").val();
+        var user_id = localStorage.getItem("user_id");
+        console.log(checkDelivery);
+
+        if(checkDelivery == "1"){
+
+            $.ajax({
+            url : IPSetting()+"userDeliveryAddr",
+            type : "GET",
+            data :{
+                
+                user_id : user_id
+              
+            },
+            dataType : "jsonp",
+            success : function(data){
+
+                $("#newDeliveryAddr").val(data.user_addr);
+                
+               
+            }
+        });
+            
+        }
          
     });
        
@@ -102,7 +157,6 @@
 </head>
 <body>
 
-<div></div>
    <div id="title">
      
        <img src="img/nfc.png" width="40px" height="40px">
@@ -110,11 +164,192 @@
     
    </div>
 
+   <div style="margin-bottom :10px;">
+        <input type="checkbox" id="allCheck" /> 전체 선택
+   </div>
+
    <div id="list">
- 
+   <!--<div class="recommandProduct">
+    <img src="img/product.png" class="recommandImg"/>
+    <p>여성옷</p>
+
+    <div class="basket">
+          <button id="plus">+</button>
+          <span id="basket_qy">10</span>개
+          <button id="minus">-</button>
+          <input type="checkbox"/>
+    </div>
+   
+      <p class="price">10000원</p>
+   </div>-->
 
 
    </div>
+
+   <div id="setlement">
+       <input type="radio" id="card" name="setlement" value="1"/ checked> <label for="card" > 카드 </label>
+       <input type="radio" id="money" name="setlement"  value="2"/><label for="money"> 현금 </label>
+   </div>
+   <div id="deliveryAddr">
+         <input type="radio" name="deliveryAddr" id="basicAddr" value="1" checked/> <label for="basicAddr" > 기본 배송지 </label>
+         <input type="radio" name="deliveryAddr" id="newAddr" value="2"/> <label for="newAddr"> 새로운 배송지 </label>
+         <br>
+         <br>
+        <textarea id="newDeliveryAddr" cols="50" rows="5"></textarea>
+   </div>
+   <div id="deliveryBasket">
+        <h2>배송하기</h2>
+   </div>
+
+   <script>
+    $(document).on("click", ".plus", function(){
+        var goods_code = $(this).parent().attr("data-id");
+        var bhf_code = localStorage.getItem("bhf_code");
+        var user_id = localStorage.getItem("user_id");
+        var basket_qy = parseInt($(this).next().attr("basket_qy"))+1;
+        var price = parseInt($(this).parent().next().attr("goods_pc"));
+
+        var thisE = $(this);
+
+        $.ajax({
+            url : IPSetting()+"updateBasket_qy",
+            type : "GET",
+            data :{
+                bhf_code : bhf_code,
+                user_id : user_id,
+                goods_code : goods_code,
+                basket_qy : basket_qy
+            },
+            dataType : "jsonp",
+            success : function(data){
+
+                 console.log(data.result);
+                if(data.result == "success"){
+
+                     thisE.next().attr("basket_qy", basket_qy);
+                      thisE.next().text(" " + basket_qy + " ");
+                       thisE.parent().next().text(basket_qy * price + "원");
+                }
+               
+            }
+        });
+        
+    });
+
+
+    $(document).on("click", ".minus", function(){
+        var goods_code = $(this).parent().attr("data-id");
+        var bhf_code = localStorage.getItem("bhf_code");
+        var user_id = localStorage.getItem("user_id");
+        var basket_qy = parseInt($(this).prev().attr("basket_qy")) - 1;
+        var price = parseInt($(this).parent().next().attr("goods_pc"));
+
+        var thisE = $(this);
+
+        $.ajax({
+            url : IPSetting()+"updateBasket_qy",
+            type : "GET",
+            data :{
+                bhf_code : bhf_code,
+                user_id : user_id,
+                goods_code : goods_code,
+                basket_qy : basket_qy
+            },
+            dataType : "jsonp",
+            success : function(data){
+
+                 console.log(data.result);
+                if(data.result == "success"){
+
+                     thisE.prev().attr("basket_qy", basket_qy);
+                     thisE.prev().text(" " + basket_qy + " ");
+                      thisE.parent().next().text(basket_qy * price + "원");
+
+                }
+               
+            }
+        });
+        
+    });
+
+
+    $(document).on("click", ".basketDel", function(){
+        var goods_code = $(this).parent().attr("data-id");
+        var bhf_code = localStorage.getItem("bhf_code");
+        var user_id = localStorage.getItem("user_id");
+        var thisE = $(this).parent();
+   
+        $.ajax({
+            url : IPSetting()+"delBasket",
+            type : "GET",
+            data :{
+                bhf_code : bhf_code,
+                user_id : user_id,
+                goods_code : goods_code
+            },
+            dataType : "jsonp",
+            success : function(data){
+
+                 console.log(data.result);
+                if(data.result == "success"){
+                    console.log("성공");
+
+                    thisE.remove();
+
+                }
+               
+            }
+        });
+        
+    });
+
+    $("#allCheck").on("change", function(){
+
+        if($("#allCheck").is(':checked') == true){
+
+         $(".basket .goodsCheck").attr("checked", true);
+
+        }else{
+             $(".basket .goodsCheck").attr("checked", false);
+        }
+
+    });
+
+
+     $("input[name=deliveryAddr]").on("change", function(){
+
+          var user_id = localStorage.getItem("user_id");
+
+        if($("input[name=deliveryAddr]:checked").val() == "1"){
+
+
+            $.ajax({
+            url : IPSetting()+"userDeliveryAddr",
+            type : "GET",
+            data :{
+                
+                user_id : user_id
+              
+            },
+            dataType : "jsonp",
+            success : function(data){
+
+                $("#newDeliveryAddr").val(data.user_addr);
+                
+               
+            }
+        });
+
+            
+
+       
+        }else{
+             $("#newDeliveryAddr").val("");
+        }
+
+    });
+     
+   </script>
 
 
 </body>
