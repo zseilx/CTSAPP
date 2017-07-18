@@ -73,7 +73,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
         intent.putExtra("coupon", json.toString());
 
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-                intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                intent, PendingIntent.FLAG_ONE_SHOT);
 
 
 

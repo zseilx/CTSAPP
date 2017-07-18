@@ -13,7 +13,7 @@ public class IPSetting {
 
     // selectMode 변수의 값만 바꿈으로서 서버에 연결할 ip 값을 바꿔줌
     // 0 = 서버용 , 1 = 정영화, 2,3 = 정혜수,
-    public final static int selectMode = 2;
+    public final static int selectMode = 0;
 
     public static String getIpAddress() {
         String str = "http://";
