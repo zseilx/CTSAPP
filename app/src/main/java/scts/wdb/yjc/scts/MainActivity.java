@@ -55,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
 /*
    @Override
     protected void onResume() {
@@ -62,7 +63,9 @@ public class MainActivity extends AppCompatActivity {
         // 블루투스 권한 및 활성화 코드
        SystemRequirementsChecker.checkWithDefaultDialogs(this);
     }
+
 */
+
 
   protected void test() {
 
