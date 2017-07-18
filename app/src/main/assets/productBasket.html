@@ -6,6 +6,8 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <script src="js/jquery-3.2.1.min.js"></script>
     <script src="js/IPSetting.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <title>장바구니</title>
     <style>
        body{
@@ -79,11 +81,64 @@
             
         }
 
-     
+        #deliveryInfoButton{
+
+             width: 97%;
+            background: #202B37;
+            height: 45px;
+            color: white;
+            margin-bottom: 15px;
+            text-align: center;
+
+        }
+
+        #couponHoldInfoButton{
+             width: 97%;
+            background: #202B37;
+            height: 45px;
+            color: white;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        #couponHoldInfo{
+            display: none;
+        }
+
+        .coupon{
+            width: 96%;
+            height: 145px;
+            border: 0.2px solid black;
+            margin-bottom: 10px;
+        }
+
+
+        .couponImg{
+            margin-left: 15px;
+            margin-top: 10px;
+            width: 75px;
+            height: 75px;
+            margin-right: 15px;
+            float: left;
+        }
+        .couponE{
+            background: #FFA7A7;
+            margin-right: 15px;
+            margin-top: -10px;
+            border: none;
+            width: 70px;
+            height: 30px;
+            float: right;
+        }
+        .couponDe{
+            font-size: 13px;
+            margin-top: -10px;
+        }
   
        
     </style>
     <script>
+
 
     $(document).ready(function(){
 
@@ -100,6 +155,9 @@
             dataType:"jsonp",
             success : function(data){
                var length = data.data.length;
+
+
+               var price = 0;
            
 
                     for(var i = 0; i<length; i++){
@@ -107,6 +165,7 @@
                         var list = $("#list");
 
                         list.append($('<div></div>').addClass("recommandProduct").attr('data-id', data.data[i].goods_code));
+                        $(".recommandProduct[data-id="+data.data[i].goods_code +"]").attr("coupon_code", "0");
                         $(".recommandProduct[data-id="+data.data[i].goods_code +"]").append($("<img />").attr("src", "img/product.png").addClass("recommandImg"));
                         $(".recommandProduct[data-id="+data.data[i].goods_code +"]").append($("<p></p>").text(data.data[i].goods_nm));
                         $(".recommandProduct[data-id="+data.data[i].goods_code +"]").append($("<div></div>").addClass("basket").attr("data-id", data.data[i].goods_code));
@@ -116,9 +175,16 @@
                         $(".basket[data-id="+data.data[i].goods_code +"]").append($("<input type='checkbox' class='goodsCheck'/>"));
                         $(".recommandProduct[data-id="+data.data[i].goods_code +"]").append($("<p></p>").attr("goods_pc",data.data[i].goods_pc )
                         .text((parseInt(data.data[i].goods_pc) * parseInt(data.data[i].basket_qy))+"원").addClass("price"));
-                         $(".recommandProduct[data-id="+data.data[i].goods_code +"]").append($("<button></button>").addClass("basketDel").text("삭제"));
+                        $(".recommandProduct[data-id="+data.data[i].goods_code +"] .price").attr("productPrice", parseInt(data.data[i].goods_pc) * parseInt(data.data[i].basket_qy));
+                        $(".recommandProduct[data-id="+data.data[i].goods_code +"]").append($("<button></button>").addClass("basketDel").text("삭제"));
+
+                        price += parseInt(data.data[i].goods_pc) * parseInt(data.data[i].basket_qy); 
 
                     }
+
+                    console.log(price);
+
+                    $("#total_price").attr("total", price).text("총 가격 : " + price + "원");
 
 
                 
@@ -150,6 +216,36 @@
         });
             
         }
+
+        $.ajax({
+             url : IPSetting()+"usableCoupon",
+            type : "GET",
+            data :{
+                
+                user_id : user_id
+              
+            },
+            dataType : "jsonp",
+            success : function(data){
+
+                var length = data.data.length;
+
+                var couponInfo = $("#couponHoldInfo");
+
+                for(var i = 0; i < length; i++){
+
+                    couponInfo.append($("<div></div>").addClass("coupon").attr("data-id", data.data[i].coupon_code));
+                    $(".coupon[data-id="+data.data[i].coupon_code +"]").attr("goods_code", data.data[i].goods_code);
+                    $(".coupon[data-id="+data.data[i].coupon_code +"]").append($("<img />").attr("src", "img/coupon.png").addClass("couponImg"));
+                    $(".coupon[data-id=" + data.data[i].coupon_code + "]").append($("<p></p>").text(data.data[i].coupon_nm));
+                    $(".coupon[data-id=" + data.data[i].coupon_code + "]").append($("<p></p>").text(data.data[i].coupon_end_de).addClass("couponDe"));
+                    $(".coupon[data-id=" + data.data[i].coupon_code + "]").append($("<p></p>").text(data.data[i].coupon_dscnt));
+                    $(".coupon[data-id=" + data.data[i].coupon_code +"]").append($("<button></button>").addClass("couponE").text("적용하기"));
+                }
+                
+               
+            }
+        });
          
     });
        
@@ -165,41 +261,61 @@
    </div>
 
    <div style="margin-bottom :10px;">
-        <input type="checkbox" id="allCheck" /> 전체 선택
+        <input type="checkbox" id="allCheck" /> <label for="allCheck">전체 선택</label>
    </div>
 
    <div id="list">
-   <!--<div class="recommandProduct">
-    <img src="img/product.png" class="recommandImg"/>
-    <p>여성옷</p>
-
-    <div class="basket">
-          <button id="plus">+</button>
-          <span id="basket_qy">10</span>개
-          <button id="minus">-</button>
-          <input type="checkbox"/>
-    </div>
-   
-      <p class="price">10000원</p>
-   </div>-->
-
-
+  
    </div>
 
-   <div id="setlement">
-       <input type="radio" id="card" name="setlement" value="1"/ checked> <label for="card" > 카드 </label>
-       <input type="radio" id="money" name="setlement"  value="2"/><label for="money"> 현금 </label>
+   <div id="total_price">총가격 : </div>
+
+   <div id="couponHoldInfoButton">
+        <h2>사용 가능한 쿠폰</h2>
    </div>
-   <div id="deliveryAddr">
-         <input type="radio" name="deliveryAddr" id="basicAddr" value="1" checked/> <label for="basicAddr" > 기본 배송지 </label>
-         <input type="radio" name="deliveryAddr" id="newAddr" value="2"/> <label for="newAddr"> 새로운 배송지 </label>
-         <br>
-         <br>
-        <textarea id="newDeliveryAddr" cols="50" rows="5"></textarea>
+
+   <div id="couponHoldInfo"></div>
+
+   <div id="deliveryInfoButton">
+     <h2>  배송지 정보 입력 </h2>
+   </div>
+   <div id="deliveryInfo">
+        <div id="setlement">
+            <input type="radio" id="card" name="setlement" value="1"/ checked> <label for="card" > 카드 </label>
+            <input type="radio" id="money" name="setlement"  value="2"/><label for="money"> 현금 </label>
+        </div>
+        <div id="deliveryAddr">
+                <input type="radio" name="deliveryAddr" id="basicAddr" value="1" checked/> <label for="basicAddr" > 기본 배송지 </label>
+                <input type="radio" name="deliveryAddr" id="newAddr" value="2"/> <label for="newAddr"> 새로운 배송지 </label>
+                <br>
+                <br>
+                <textarea id="newDeliveryAddr" cols="40" rows="5"></textarea>
+        </div>
    </div>
    <div id="deliveryBasket">
         <h2>배송하기</h2>
    </div>
+
+
+       <div class="modal fade" id="deliveryAlert" style="width:390px; height:200px;" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-body couponBody">
+          결제 + 배송신청을 하시겠습니까?
+        </div>
+        <div class="modal-footer">
+        <button type="button" class="btn btn-default deliveryNO" data-dismiss="modal">취소</button>
+          <button type="button" class="btn btn-default deliveryOK" data-dismiss="modal">확인</button>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+
+
+
 
    <script>
     $(document).on("click", ".plus", function(){
@@ -208,6 +324,8 @@
         var user_id = localStorage.getItem("user_id");
         var basket_qy = parseInt($(this).next().attr("basket_qy"))+1;
         var price = parseInt($(this).parent().next().attr("goods_pc"));
+        var productPrice =  parseInt($(this).parent().next().attr("productPrice"));
+        var total_price = parseInt($("#total_price").attr("total"));
 
         var thisE = $(this);
 
@@ -227,8 +345,12 @@
                 if(data.result == "success"){
 
                      thisE.next().attr("basket_qy", basket_qy);
-                      thisE.next().text(" " + basket_qy + " ");
-                       thisE.parent().next().text(basket_qy * price + "원");
+                     thisE.next().text(" " + basket_qy + " ");
+                     thisE.parent().next().text((productPrice + price) + "원");
+                     thisE.parent().next().attr("productPrice", productPrice + price);
+                     $("#total_price").text("총 가격 : " + (total_price + price) +"원");
+                     $("#total_price").attr("total", (total_price + price));
+                     
                 }
                
             }
@@ -243,6 +365,8 @@
         var user_id = localStorage.getItem("user_id");
         var basket_qy = parseInt($(this).prev().attr("basket_qy")) - 1;
         var price = parseInt($(this).parent().next().attr("goods_pc"));
+        var productPrice =  parseInt($(this).parent().next().attr("productPrice"));
+        var total_price = parseInt($("#total_price").attr("total"));
 
         var thisE = $(this);
 
@@ -263,7 +387,10 @@
 
                      thisE.prev().attr("basket_qy", basket_qy);
                      thisE.prev().text(" " + basket_qy + " ");
-                      thisE.parent().next().text(basket_qy * price + "원");
+                     thisE.parent().next().text((productPrice - price) + "원");
+                     thisE.parent().next().attr("productPrice", productPrice - price);
+                     $("#total_price").text("총 가격 : " + (total_price - price) +"원");
+                     $("#total_price").attr("total", (total_price - price));
 
                 }
                
@@ -348,7 +475,144 @@
         }
 
     });
-     
+    
+    $("#deliveryInfoButton").click(function(){
+        $("#deliveryInfo").slideToggle();
+    });
+
+    $("#couponHoldInfoButton").click(function(){
+        $("#couponHoldInfo").slideToggle();
+    });
+
+    $(document).on("click", ".couponE", function(){
+        var goods_code1 = $(this).parent().attr("goods_code");
+        var coupon_code = $(this).parent().attr("data-id");
+        var coupon_discnt = $(this).prev().text();
+
+        var couponE = $(this).parent();
+        
+    
+        $(".recommandProduct").each(function(){
+
+            var goods_code2 = $(this).attr("data-id");
+
+            var price = $(this).find(".price").text().split("원")[0];
+            price = parseInt(price);
+             var total_price = parseInt($("#total_price").attr("total"));
+
+            console.log("가격" + price);
+
+           
+            var coupon_discnt2 = 0
+            
+
+            if(goods_code1 == goods_code2){
+
+                if(coupon_discnt.match(".*%")){
+                    coupon_discnt = coupon_discnt.split("%")[0];
+                    console.log(coupon_discnt);
+                    coupon_discnt = parseInt(coupon_discnt);
+                    coupon_discnt2 =  price * (coupon_discnt/100);
+                    price = price - (price  * (coupon_discnt / 100));
+                   
+                    console.log("와아ㅇ차!" + coupon_discnt);
+                }else{
+                    coupon_discnt2 =  parseInt(coupon_discnt);
+                    coupon_discnt = parseInt(coupon_discnt);
+                    price = price - coupon_discnt;
+
+                    console.log("히하ㅏ" + price);
+                }
+
+                console.log(goods_code1 + "  " +  goods_code2);
+                console.log("price" +price);
+
+                $(this).attr("coupon_code", coupon_code);
+                $(this).find(".price").attr("productPrice", price).text(price+"원");
+                $("#total_price").text("총 가격 : " + (total_price - coupon_discnt2) +"원");
+                $("#total_price").attr("total", (total_price - coupon_discnt2));
+                couponE.remove();
+
+            }
+            
+        });
+    });
+
+    $("#deliveryBasket").click(function(){
+
+        $("#deliveryAlert").modal();
+    });
+
+     $(".deliveryOK").click(function(){
+
+        var user_id = localStorage.getItem("user_id");
+        var bhf_code = localStorage.getItem("bhf_code");
+        var goodsList = [];
+        var bill_totamt = $("#total_price").attr("total");
+        var setle_mth_code = $("input[name=setlement]:checked").val();
+        var delivery_addr = $("#newDeliveryAddr").val();
+
+        $(".recommandProduct").each(function(){
+
+            if($(this).find(".goodsCheck").is(":checked")){
+
+                var goods_code = $(this).attr("data-id");
+                var coupon_code = $(this).attr("coupon_code");
+                var purchsgoods_qy = $(this).find("span").attr("basket_qy");
+
+                var goodsItem = {
+					goods_code : goods_code,
+					coupon_code : coupon_code,
+					purchsgoods_qy : purchsgoods_qy
+			    };
+
+                goodsList.push(goodsItem);
+
+            }
+
+        });
+
+
+        if(delivery_addr){
+
+            if(goodsList.length > 0){
+                
+                goodsList = JSON.stringify(goodsList);
+
+                 $.ajax({
+
+                             
+                             url:IPSetting()+"delivery",
+                             type:"GET",
+                             data: {
+                                    user_id : user_id,
+                                    setle_mth_code : setle_mth_code,
+                                    bhf_code : bhf_code,
+                                    bill_totamt : bill_totamt,
+                                    delivery_addr : delivery_addr,
+                                    goodsList : goodsList
+                             },
+                            contentType: "application/json",
+                            dataType:"jsonp",
+                            success : function(data){
+
+                                window.location.href = "purchaseList.html";
+
+                            }
+
+                    });
+
+            }
+
+           
+
+        }
+
+
+
+            
+       
+    });
    </script>
 
 

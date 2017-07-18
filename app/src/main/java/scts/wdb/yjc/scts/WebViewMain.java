@@ -322,9 +322,7 @@ import scts.wdb.yjc.scts.hardwaremanager.SensorM;
 
 
                         @JavascriptInterface
-                        public void nfcAction() {
-
-                            Log.d("nfc 왔어요", "헤헷");
+                        public void delivery() {
 
 
 
