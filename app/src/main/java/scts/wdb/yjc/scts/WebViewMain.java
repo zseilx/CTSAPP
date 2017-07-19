@@ -142,11 +142,6 @@ import scts.wdb.yjc.scts.hardwaremanager.SensorM;
                                 e.printStackTrace();
                             }
 
-
-
-                            //testCoupon();
-
-
                         }
                     });
 
@@ -205,8 +200,6 @@ import scts.wdb.yjc.scts.hardwaremanager.SensorM;
                 public void onBackPressed() {
                     long tempTime        = System.currentTimeMillis();
                     long intervalTime    = tempTime - backPressedTime;
-
-                    webView.loadUrl("javascript:event('true')");
 
                     if (webView.canGoBack()) {
 
@@ -346,8 +339,12 @@ import scts.wdb.yjc.scts.hardwaremanager.SensorM;
 
                         point = sp.getString("point", "0");
 
+                        String bhf_code = sp.getString("bhf_code", "2");
 
-                        webView.loadUrl("javascript:setId('"+str+"', '"+point+"')");
+
+
+
+                        webView.loadUrl("javascript:setId('"+str+"', '"+point+"', '"+bhf_code+"')");
 
                         if(getIntent().getExtras() != null){
 

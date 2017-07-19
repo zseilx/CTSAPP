@@ -137,11 +137,11 @@
 
     <script>
 
-    function setId(id, point){
+    function setId(id, point, bhf_code){
         document.getElementById("name").innerHTML= id;
         document.getElementById("point").innerHTML= point +"P"; 
         localStorage.setItem("user_id", id);
-        localStorage.setItem("bhf_code", "2");   
+        localStorage.setItem("bhf_code", bhf_code);   
     }
     // 이곳이 바로 쿠폰 받는곳이다!!!!!!!!!!!!!!!!
     function coupon(data){
