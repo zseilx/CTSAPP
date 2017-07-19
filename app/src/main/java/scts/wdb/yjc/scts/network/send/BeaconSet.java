@@ -1,6 +1,7 @@
 package scts.wdb.yjc.scts.network.send;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -20,9 +21,14 @@ import static android.content.ContentValues.TAG;
 public class BeaconSet extends AsyncTask<String, String, String> {
 
     private Context mContext;
+    SharedPreferences sp;            // 세션 유지하기위한 preference
 
     public BeaconSet(Context mContext) {
         this.mContext = mContext;
+    }
+    public BeaconSet(Context mContext, SharedPreferences sp ) {
+        this.mContext = mContext;
+        this.sp = sp;
     }
 
     protected  void onPreExcute(){
@@ -77,6 +83,12 @@ public class BeaconSet extends AsyncTask<String, String, String> {
             // 가져온 데이터에서 명령문을 해독함
             String command = json.get("command").getAsString().toString();
             Log.d(TAG, "onSUCCESS: " + command);
+
+            SharedPreferences.Editor editor = sp.edit();
+            String bhf_code = json.get("bhf_code").getAsString().toString();
+            editor.putString("bhf_code", bhf_code);
+            editor.commit();
+
             // 돌아온 데이터에 쿠폰이 존재하지 않을 때
             // 해당 명령문은 비콘 데이터 첫번째 전송, 두번째 전송 모두에서 이루어 질 수 있으며
             // 두번째 전송의 경우에는 무조건 emptycoupon에 속하게 되어있음
