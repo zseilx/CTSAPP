@@ -74,7 +74,7 @@ public class BeaconSet extends AsyncTask<String, String, String> {
 
         // 제이슨 사용시 주의할 점이 getAsString()를 사용하지 않으면 데이터에 "" 가 붙어서 나와서 equals 사용때 이스케이프 문자열로 쌍따운표 붙여줘야됨.
         // 안붙이고 사용할 거면 getAsString() 메소드를 사용해서 ""를 제거해줘야됨
-        JsonObject json = new Gson().fromJson(s, JsonObject.class);;
+        JsonObject json = new Gson().fromJson(s, JsonObject.class);
         Log.d(TAG, "onPostExecute: " + json.toString());
 
 
@@ -89,20 +89,27 @@ public class BeaconSet extends AsyncTask<String, String, String> {
             editor.putString("bhf_code", bhf_code);
             editor.commit();
 
+
+            JsonObject tileJson = (JsonObject) json.get("tile");
+
+            JsonObject couponJson = (JsonObject) json.get("coupon");
+
+            tileDataRecive(tileJson);
+
             // 돌아온 데이터에 쿠폰이 존재하지 않을 때
             // 해당 명령문은 비콘 데이터 첫번째 전송, 두번째 전송 모두에서 이루어 질 수 있으며
             // 두번째 전송의 경우에는 무조건 emptycoupon에 속하게 되어있음
             // 첫번째 전송의 경우에는 쿠폰이 비어있을 경우에만 가능
             if( command.equals("emptycoupon") ) {
                 Log.d(TAG, "onFULL: " + command);
-                emptyRecive(json);
+                emptyRecive(couponJson);
             }
 
             // 돌아온 데이터에 쿠폰이 있을 때.
             // 해당 명령문은 무조건 비콘 데이터전송의 첫번째 에서만 이루어 질 수 있음
             else if(command.equals("fullcoupon")) {
                 Log.d(TAG, "notCOUPON: " + command);
-                fullRecive(json);
+                fullRecive(couponJson);
             }
         }
         // 에러 처리
@@ -132,5 +139,17 @@ public class BeaconSet extends AsyncTask<String, String, String> {
     // 쿠폰 받은거 없을때 처리하는 부분인데 현재 아무것도 할 게 없어서 안해놧음
     protected void emptyRecive(JsonObject json) {
         // 공백
+    }
+
+    protected void tileDataRecive(JsonObject tileJson) {
+        // 여기로 타일 데이터 넘어옴
+        // 형식은 : {"TILE_CRDNT_X":0,"TILE_CODE":128,"TILE_CRDNT_Y":9,"TILE_NM":"A_0_9","DRW_CODE":4}
+
+        try {
+            Log.d(TAG, "tileDataRecive: " + tileJson);
+            ((WebViewMain)mContext).setTile(tileJson);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

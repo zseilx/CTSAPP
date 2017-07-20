@@ -1,6 +1,5 @@
 package scts.wdb.yjc.scts;
 
-import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -19,7 +18,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
@@ -30,7 +28,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.estimote.sdk.BeaconManager;
-import com.estimote.sdk.cloud.model.Device;
 import com.google.gson.JsonObject;
 
 import org.json.JSONException;
@@ -39,7 +36,6 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.util.Arrays;
 
 import scts.wdb.yjc.scts.bean.IPSetting;
@@ -187,6 +183,12 @@ import scts.wdb.yjc.scts.hardwaremanager.SensorM;
 
                 public void setCoupon(JsonObject json) {
                     webView.loadUrl("javascript:coupon('"+ json +"')");
+                }
+
+                public void setTile(JsonObject tileJson) {
+                    // 여기로 타일 데이터 넘어옴
+                    // 형식은 : {"TILE_CRDNT_X":0,"TILE_CODE":128,"TILE_CRDNT_Y":9,"TILE_NM":"A_0_9","DRW_CODE":4}
+
                 }
 
                 public void testCoupon() {
