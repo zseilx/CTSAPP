@@ -113,7 +113,16 @@
    
    </div>
 
+   <script>
+   $(document).on("click", ".product", function(){
+        var goods_code = $(this).attr("data-product");
+        localStorage.setItem("goods_code", goods_code);
 
+        window.location.href = "productDetail.html";
+
+});
+   
+   </script>
 
 
 </body>
