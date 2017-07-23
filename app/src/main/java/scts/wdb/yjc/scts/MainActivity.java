@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-/*
+
    @Override
     protected void onResume() {
         super.onResume();
@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
        SystemRequirementsChecker.checkWithDefaultDialogs(this);
     }
 
-*/
+
 
 
   protected void test() {
@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.login).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SharedPreferences sp = getSharedPreferences("test", 0);
+                sp = getSharedPreferences("test", 0);
                 String str = sp.getString("user_id", "");
 
                 BeaconTimeData beaconTimeData = new BeaconTimeData(123, 45678);

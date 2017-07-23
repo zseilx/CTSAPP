@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="js/jquery-3.2.1.min.js"></script>
+    <script src="js/IPSetting.js"></script>
+    <script src="js/searchProduct.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <title>물품 상세보기</title>
+   <style>
+       body{
+            background:#FFFFF6;
+           
+        }
+        #title{
+            
+          
+            width: 97%;
+            background: #202B37;
+            height: 55px;
+            color: white;
+            margin-bottom: 15px;
+        
+            
+        }
+        #title > img{
+            position: relative;
+            top: -5%;
+            left: 25%;
+            margin: 10px 5px 10px 0px;
+            float: left;
+        }
+        #title > h2{
+             position: relative;
+            left: 27%;
+            line-height: 50px;
+        }
+
+        .recommandProduct{
+            width: 96%;
+            height: 100px;
+            border: 0.2px solid black;
+            margin-bottom: 10px;
+        }
+
+
+        .recommandImg{
+            margin-left: 20px;
+            margin-top: 20px;
+            width: 60px;
+            height: 60px;
+            margin-right: 15px;
+            float: left;
+        }
+
+        .price{
+            float: right;
+            margin-top: -10px;
+            margin-right: 30px;
+        }
+
+     
+  
+       
+    </style>
+    <script>
+    $(document).ready(function(){
+        $("#list").empty();
+
+        var goods_code = localStorage.getItem("goods_code");
+        var bhf_code = localStorage.getItem("bhf_code");
+        var str = IPSetting();
+        var drawing = str.split("/")[0] + "/" +str.split("/")[1] +"/" + str.split("/")[2] +"/" + str.split("/")[3] +"/"+"displayDrawing?fileName=/";
+
+        $.ajax({
+
+            type :"GET",
+            url :IPSetting()+"goodsOne",
+            data :{
+                goods_code : goods_code,
+                bhf_code : bhf_code
+            },
+            dataType : "jsonp",
+            success : function(data){
+              
+                $("#list").append($("<div></div>").addClass("goods"));
+                $(".goods").append($("<h4></h4>").text(data.goodsOne.goods_nm));
+                $(".goods").append($("<p></p>").text(data.goodsOne.goods_pc));
+                $(".goods").append($("<hr />"));
+
+                for(var i=0; i < data.drawingList.length; i++){
+                   
+                    $(".goods").append($("<p></p>").text(data.drawingList[i].floorinfo_floor+"층"));
+                    $(".goods").append($("<div class='tileMap' style='width: 350px; border: black solid 1px; height: 280px;'></div>").attr("data-id", data.drawingList[i].drw_code));
+                    $(".tileMap[data-id=" + data.drawingList[i].drw_code+"]").css("background", "url("+drawing + data.drawingList[i].drw_flpth + ") no-repeat");
+                    $(".tileMap[data-id=" + data.drawingList[i].drw_code+"]").css("background-size", "cover");
+                    $(".goods").append($("<br />"));
+
+
+                    var tileMap = $(".tileMap[data-id=" + data.drawingList[i].drw_code+"]");
+
+				    tileMap.empty();
+
+                    for(var j=0; j<data.drawingList[i].size_y; j++) {
+                        var tileRow = $("<div></div>");
+
+                        for(var k=0; k<data.drawingList[i].size_x; k++) {
+                            var tileItem = $("<div></div>").addClass("tile").attr("data-id", j+""+k);
+                             $(".tile[data-id=" + j+""+k+"]").attr("tile_crdnt_y", j);
+                             $(".tile[data-id=" + j+""+k+"]").attr("tile_crdnt_x", k);
+                            
+                            tileItem.appendTo(tileRow);
+
+                            var tile_crdnt_y =  $(".tile[data-id=" + j+""+k+"]").attr("tile_crdnt_y"); 
+                            var tile_crdnt_x =  $(".tile[data-id=" + j+""+k+"]").attr("tile_crdnt_x");
+
+                            if(data.goodsOne.tile_crdnt_y == tile_crdnt_y && data.goodsOne.tile_crdnt_x == tile_crdnt_x ){
+                                $(".tile[data-id=" + j+""+k +"]").css("background-color", "rgba(241, 95, 95, 0.5)");
+                            }
+                        }
+                        tileRow.appendTo(tileMap);
+                    }
+                    var heightSize = 100 / data.drawingList[i].size_y;
+                    var widthSize = 100 / data.drawingList[i].size_x;
+                    $(".tileMap[data-id=" + data.drawingList[i].drw_code+"] > div").css("width", "100%").css("height", heightSize + "%");
+                    $(".tile").css("width", widthSize + "%").css("height", "100%").css("float", "left"); 
+                    $(".tile").css("border", "black solid 1px"); 
+                   
+                }
+            }
+
+
+        });
+    });
+
+    function comeBeacon(data){
+        
+        if(data != null){
+            $(".tileMap[data-id=" + data.DRW_CODE+"] .tile").each(function(){
+                var tile_crdnt_y = $(this).attr("tile_crdnt_y");
+                var tile_crdnt_x = $(this).attr("tile_crdnt_x");
+
+                if(data.TILE_CRDNT_X == tile_crdnt_x && data.TILE_CRDNT_Y == tile_crdnt_y){
+                  
+                     if($(this).css("background-color") == "rgba(241, 95, 95, 0.5)"){
+                        $(this).css("background-color", "rgba(47, 157, 39, 0.5)");
+                        $(this).text("도착!");
+                    }else{
+                        $(this).css("background-color", "rgba(0, 84, 255, 0.5)");
+                        $(this).text("");
+                    }
+
+                }else{
+                    if($(this).css("background-color") == "rgba(241, 95, 95, 0.5)"){
+                        $(this).css("background-color", "rgba(241, 95, 95, 0.5)");
+                        $(this).text("");
+                        
+                    }else if($(this).css("background-color") == "rgba(47, 157, 39, 0.5)"){
+                        $(this).css("background-color", "rgba(241, 95, 95, 0.5)");
+                        $(this).text("");
+                    }
+                    else{
+                        $(this).css("background-color", "rgba(0, 84, 255, 0)");
+                        $(this).text("");
+                    }
+                     
+                }
+            });
+
+        }
+
+    }
+    </script>
+</head>
+
+<body>
+    <div id="title">
+     
+       <img src="img/searchProduct.png" width="40px" height="40px">
+       <h2>물품 상세보기</h2>
+    
+   </div>
+
+   <div id="list">
+   
+   </div>
+    
+</body>
+</html>

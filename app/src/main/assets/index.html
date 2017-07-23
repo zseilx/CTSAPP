@@ -4,9 +4,10 @@
     <meta charset="UTF-8">
        <!--<meta name="viewport" content="width=350 height=495 initial-scale=1">-->
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="js/jquery-3.2.1.min.js"></script>
     <script src="js/IPSetting.js"></script>
+    <script src="js/searchProduct.js"></script>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <style>
         body{
@@ -159,19 +160,6 @@
     }
 
   
-
-    function searchProduct(s){
-
-        if(s == 'no'){
-            localStorage.setItem("searchProduct", 'no');
-        }else{
-             localStorage.setItem("searchProduct", s);
-        }
-       
-       window.location.href = "searchProduct.html";
-
-    }
-
 
     function couponHere(data){
 

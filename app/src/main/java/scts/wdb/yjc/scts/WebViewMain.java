@@ -54,6 +54,7 @@ import scts.wdb.yjc.scts.hardwaremanager.SensorM;
                 private String str;
                 private String point;
                 private String coupon;
+                private String bhf_code;
                 private SharedPreferences.Editor editor;
 
 
@@ -113,6 +114,9 @@ import scts.wdb.yjc.scts.hardwaremanager.SensorM;
                     webView.loadUrl(MAIN_URL);
 
 
+
+
+
                     productInput = (EditText) findViewById(R.id.productInput);
 
                     button = (Button) findViewById(R.id.productSearch);
@@ -131,7 +135,17 @@ import scts.wdb.yjc.scts.hardwaremanager.SensorM;
 
                                 }else{
                                     NetworkTask networkTask = new NetworkTask();
-                                    networkTask.execute(productName);
+                                    JSONObject json = new JSONObject();
+                                    bhf_code = sp.getString("bhf_code", "2");
+                                    try {
+                                        json.put("productName", productName);
+                                        json.put("bhf_code", bhf_code);
+                                        networkTask.execute(json.toString());
+
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+
                                 }
 
                             } catch (UnsupportedEncodingException e) {
@@ -188,6 +202,16 @@ import scts.wdb.yjc.scts.hardwaremanager.SensorM;
                 public void setTile(JsonObject tileJson) {
                     // 여기로 타일 데이터 넘어옴
                     // 형식은 : {"TILE_CRDNT_X":0,"TILE_CODE":128,"TILE_CRDNT_Y":9,"TILE_NM":"A_0_9","DRW_CODE":4}
+                    if(tileJson != null){
+
+                        if(webView.getUrl().equals("file:///android_asset/productDetail.html")){
+                            webView.loadUrl("javascript:comeBeacon(" + tileJson + ")");
+                            Log.d("dd", tileJson.toString());
+                        }
+
+                    }
+
+                    Log.d("url", webView.getUrl());
 
                 }
 
@@ -234,7 +258,6 @@ import scts.wdb.yjc.scts.hardwaremanager.SensorM;
                         }
                         else {
                             backPressedTime = tempTime;
-                            Toast.makeText(getApplicationContext(),"'뒤로'버튼을한번더누르시면종료됩니다.",Toast.LENGTH_SHORT).show();
                         }
 
                     }
@@ -266,7 +289,7 @@ import scts.wdb.yjc.scts.hardwaremanager.SensorM;
 
                                     sp = getSharedPreferences("test", 0);
                                     String user_id  = sp.getString("user_id", "");
-                                    String bhf_code = sp.getString("bhf_code", "2");
+                                    bhf_code = sp.getString("bhf_code", "2");
 
                                     JSONObject json = new JSONObject();
                                     try {
@@ -375,7 +398,7 @@ import scts.wdb.yjc.scts.hardwaremanager.SensorM;
                         HttpClient.Builder http = new HttpClient.Builder("POST", IPSetting.getIpAddress() + "productSearch");
 
 
-                        http.addOrReplace("productName", json[0]);
+                        http.addOrReplace("json", json[0]);
 
                         Log.d("param", json[0]);
 
