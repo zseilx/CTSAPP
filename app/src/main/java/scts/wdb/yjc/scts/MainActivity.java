@@ -57,12 +57,14 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+
    @Override
     protected void onResume() {
         super.onResume();
         // 블루투스 권한 및 활성화 코드
        SystemRequirementsChecker.checkWithDefaultDialogs(this);
     }
+
 
 
 

@@ -108,8 +108,8 @@
                         var tileRow = $("<div></div>");
 
                         for(var k=0; k<data.drawingList[i].size_x; k++) {
-                            var tileItem = $("<div></div>").addClass("tile").attr("data-id", j+""+k);
-                             $(".tile[data-id=" + j+""+k+"]").attr("tile_crdnt_y", j);
+                            var tileItem = $("<div drw_code="+ data.drawingList[i].drw_code + "></div>").addClass("tile").attr("data-id", j+""+k);
+                             $(".tile[data-id=" + j+""+k+"]").attr("tile_crdnt_y", j); 
                              $(".tile[data-id=" + j+""+k+"]").attr("tile_crdnt_x", k);
                             
                             tileItem.appendTo(tileRow);
@@ -126,8 +126,8 @@
                     var heightSize = 100 / data.drawingList[i].size_y;
                     var widthSize = 100 / data.drawingList[i].size_x;
                     $(".tileMap[data-id=" + data.drawingList[i].drw_code+"] > div").css("width", "100%").css("height", heightSize + "%");
-                    $(".tile").css("width", widthSize + "%").css("height", "100%").css("float", "left"); 
-                    $(".tile").css("border", "black solid 1px"); 
+                    $(".tile[drw_code=" + data.drawingList[i].drw_code+"]").css("width", widthSize + "%").css("height", "100%").css("float", "left"); 
+                    $(".tile[drw_code=" + data.drawingList[i].drw_code+"]").css("border", "black solid 1px"); 
                    
                 }
             }
@@ -148,7 +148,11 @@
                      if($(this).css("background-color") == "rgba(241, 95, 95, 0.5)"){
                         $(this).css("background-color", "rgba(47, 157, 39, 0.5)");
                         $(this).text("도착!");
-                    }else{
+                    }else if($(this).css("background-color") == "rgba(47, 157, 39, 0.5)"){
+                       $(this).css("background-color", "rgba(47, 157, 39, 0.5)");
+                       $(this).text("도착!");
+                    }
+                    else{
                         $(this).css("background-color", "rgba(0, 84, 255, 0.5)");
                         $(this).text("");
                     }
