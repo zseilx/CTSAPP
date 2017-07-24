@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
                         .create()
                         .toJson(beaconTimeData);
 
-                BeaconSet test = new BeaconSet(getApplicationContext(), sp);
+                BeaconSet test = new BeaconSet(getApplicationContext());
 
                 Toast.makeText(getApplicationContext(), json, Toast.LENGTH_LONG).show();
                 Log.d(TAG, "onClick: " + json);

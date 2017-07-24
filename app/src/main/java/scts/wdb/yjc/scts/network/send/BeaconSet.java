@@ -21,14 +21,9 @@ import static android.content.ContentValues.TAG;
 public class BeaconSet extends AsyncTask<String, String, String> {
 
     private Context mContext;
-    SharedPreferences sp;            // 세션 유지하기위한 preference
 
     public BeaconSet(Context mContext) {
         this.mContext = mContext;
-    }
-    public BeaconSet(Context mContext, SharedPreferences sp ) {
-        this.mContext = mContext;
-        this.sp = sp;
     }
 
     protected  void onPreExcute(){
@@ -84,10 +79,11 @@ public class BeaconSet extends AsyncTask<String, String, String> {
             String command = json.get("command").getAsString().toString();
             Log.d(TAG, "onSUCCESS: " + command);
 
-           /* SharedPreferences.Editor editor = sp.edit();
+            SharedPreferences sp = mContext.getSharedPreferences("test", 0);
+            SharedPreferences.Editor editor = sp.edit();
             String bhf_code = json.get("bhf_code").getAsString().toString();
             editor.putString("bhf_code", bhf_code);
-            editor.commit();*/
+            editor.commit();
 
 
             JsonObject tileJson = (JsonObject) json.get("tile");
@@ -122,8 +118,7 @@ public class BeaconSet extends AsyncTask<String, String, String> {
     protected void fullRecive(JsonObject json) {
         // json data 이런형식으로 날아옴. 뿌려주는건 아직 안함.
         // {"coupon_dscnt":"10%","coupon_begin_de":"1월 1, 2017","coupon_code":2,"coupon_end_de":"12월 30, 2017","coupon_cntnts":"coffee sale","coupon_nm":"coffee man","command":"fullcoupon","status":"SUCCESS"}
-/*
-        SharedPreferences sp = getSharedPreferences("test", 0);*/
+
 
         try {
             // 해당 부분에서 json 데이터 처리할 것
