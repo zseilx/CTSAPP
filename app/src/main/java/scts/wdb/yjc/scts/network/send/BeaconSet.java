@@ -78,16 +78,7 @@ public class BeaconSet extends AsyncTask<String, String, String> {
             String command = json.get("command").getAsString().toString();
             Log.d(TAG, "onSUCCESS: " + command);
 
-<<<<<<< HEAD
 
-           /* SharedPreferences sp = mContext.getSharedPreferences("test", 0);
-            SharedPreferences.Editor editor = sp.edit();
-
-            String bhf_code = json.get("bhf_code").getAsString().toString();
-            editor.putString("bhf_code", bhf_code);
-            editor.commit();*/
-
-=======
             if( json.get("bhf_code") != null) {
                 SharedPreferences sp = mContext.getSharedPreferences("test", 0);
                 SharedPreferences.Editor editor = sp.edit();
@@ -95,7 +86,6 @@ public class BeaconSet extends AsyncTask<String, String, String> {
                 editor.putString("bhf_code", bhf_code);
                 editor.commit();
             }
->>>>>>> origin/master
 
             JsonObject tileJson = (JsonObject) json.get("tile");
 
