@@ -17,7 +17,7 @@ public class IPSetting {
 
     public static String getIpAddress() {
         String str = "http://";
-        int chk = 0;
+        int chk = 2;
 
         switch (selectMode) {
             case 0: // 서버용

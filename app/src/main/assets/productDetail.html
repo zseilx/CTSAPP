@@ -71,6 +71,7 @@
         $("#list").empty();
 
         var goods_code = localStorage.getItem("goods_code");
+         //var bhf_code = 2;
         var bhf_code = localStorage.getItem("bhf_code");
         var str = IPSetting();
         var drawing = str.split("/")[0] + "/" +str.split("/")[1] +"/" + str.split("/")[2] +"/" + str.split("/")[3] +"/"+"displayDrawing?fileName=/";
@@ -108,18 +109,17 @@
                         var tileRow = $("<div></div>");
 
                         for(var k=0; k<data.drawingList[i].size_x; k++) {
-                            var tileItem = $("<div drw_code="+ data.drawingList[i].drw_code + "></div>").addClass("tile").attr("data-id", j+""+k);
-                             $(".tile[data-id=" + j+""+k+"]").attr("tile_crdnt_y", j); 
-                             $(".tile[data-id=" + j+""+k+"]").attr("tile_crdnt_x", k);
+                            var tileItem = $("<div>"+ data.drawingList[i].drw_code + "" + j +"" +k +"</div>").addClass("tile").
+                            attr({
+                                    "data-lo" : data.drawingList[i].drw_code +""+j+""+k,
+                                    "drw_code":  data.drawingList[i].drw_code,
+                                    "tile_crdnt_y" : j,
+                                    "tile_crdnt_x" : k
+                                
+                                });
                             
                             tileItem.appendTo(tileRow);
 
-                            var tile_crdnt_y =  $(".tile[data-id=" + j+""+k+"]").attr("tile_crdnt_y"); 
-                            var tile_crdnt_x =  $(".tile[data-id=" + j+""+k+"]").attr("tile_crdnt_x");
-
-                            if(data.goodsOne.tile_crdnt_y == tile_crdnt_y && data.goodsOne.tile_crdnt_x == tile_crdnt_x ){
-                                $(".tile[data-id=" + j+""+k +"]").css("background-color", "rgba(241, 95, 95, 0.5)");
-                            }
                         }
                         tileRow.appendTo(tileMap);
                     }
@@ -130,6 +130,18 @@
                     $(".tile[drw_code=" + data.drawingList[i].drw_code+"]").css("border", "black solid 1px"); 
                    
                 }
+
+                $(".tile").each(function(){
+                    var drw_code = $(this).attr("drw_code");
+                    var tile_crdnt_x = $(this).attr("tile_crdnt_x");
+                    var tile_crdnt_y = $(this).attr("tile_crdnt_y");
+
+                    console.log(drw_code);
+
+                    if(data.goodsOne.drw_code ==  drw_code && data.goodsOne.tile_crdnt_y == tile_crdnt_y && data.goodsOne.tile_crdnt_x == tile_crdnt_x ){
+                                $(this).css("background-color", "rgba(241, 95, 95, 0.5)");
+                    }
+                })
             }
 
 
@@ -139,11 +151,12 @@
     function comeBeacon(data){
         
         if(data != null){
-            $(".tileMap[data-id=" + data.DRW_CODE+"] .tile").each(function(){
+            $(".tile").each(function(){
+                var drw_code = $(this).attr("drw_code");
                 var tile_crdnt_y = $(this).attr("tile_crdnt_y");
                 var tile_crdnt_x = $(this).attr("tile_crdnt_x");
 
-                if(data.TILE_CRDNT_X == tile_crdnt_x && data.TILE_CRDNT_Y == tile_crdnt_y){
+                if(data.DRW_CODE == drw_code && data.TILE_CRDNT_X == tile_crdnt_x && data.TILE_CRDNT_Y == tile_crdnt_y){
                   
                      if($(this).css("background-color") == "rgba(241, 95, 95, 0.5)"){
                         $(this).css("background-color", "rgba(47, 157, 39, 0.5)");
