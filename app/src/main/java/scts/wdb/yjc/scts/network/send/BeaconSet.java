@@ -72,19 +72,19 @@ public class BeaconSet extends AsyncTask<String, String, String> {
         JsonObject json = new Gson().fromJson(s, JsonObject.class);
         Log.d(TAG, "onPostExecute: " + json.toString());
 
-
         // 성공시 처리
         if( json.get("status").getAsString().equals("SUCCESS") ) {
             // 가져온 데이터에서 명령문을 해독함
             String command = json.get("command").getAsString().toString();
             Log.d(TAG, "onSUCCESS: " + command);
 
-            SharedPreferences sp = mContext.getSharedPreferences("test", 0);
-            SharedPreferences.Editor editor = sp.edit();
-            String bhf_code = json.get("bhf_code").getAsString().toString();
-            editor.putString("bhf_code", bhf_code);
-            editor.commit();
-
+            if( json.get("bhf_code") != null) {
+                SharedPreferences sp = mContext.getSharedPreferences("test", 0);
+                SharedPreferences.Editor editor = sp.edit();
+                String bhf_code = json.get("bhf_code").getAsString().toString();
+                editor.putString("bhf_code", bhf_code);
+                editor.commit();
+            }
 
             JsonObject tileJson = (JsonObject) json.get("tile");
 
