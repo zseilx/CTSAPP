@@ -62,7 +62,7 @@ public class BeaconSet extends AsyncTask<String, String, String> {
     // jsp에서 리턴한 데이터 처리부분
     /**************************** 이부분이 쿠폰 받은 부분이다!!!!!!!!!!!!!!! **************************/
 
-    protected void onPostExecute(String s){
+    protected void onPostExecute(String s) {
         Log.d(TAG, "onPostExecute: " + s);
             //String encode = URLEncoder.encode(s, "UTF-8");
             //Log.d(TAG, "onPostExecute: " + "한글 엔코드 결과" + encode);
@@ -87,11 +87,11 @@ public class BeaconSet extends AsyncTask<String, String, String> {
                 editor.commit();
             }
 
-            JsonObject tileJson = (JsonObject) json.get("tile");
 
-            JsonObject couponJson = (JsonObject) json.get("coupon");
-
-            tileDataRecive(tileJson);
+            if( json.get("tile") != null) {
+                JsonObject tileJson = (JsonObject) json.get("tile");
+                tileDataRecive(tileJson);
+            }
 
             // 돌아온 데이터에 쿠폰이 존재하지 않을 때
             // 해당 명령문은 비콘 데이터 첫번째 전송, 두번째 전송 모두에서 이루어 질 수 있으며
@@ -99,13 +99,13 @@ public class BeaconSet extends AsyncTask<String, String, String> {
             // 첫번째 전송의 경우에는 쿠폰이 비어있을 경우에만 가능
             if( command.equals("emptycoupon") ) {
                 Log.d(TAG, "onFULL: " + command);
-                emptyRecive(couponJson);
             }
 
             // 돌아온 데이터에 쿠폰이 있을 때.
             // 해당 명령문은 무조건 비콘 데이터전송의 첫번째 에서만 이루어 질 수 있음
             else if(command.equals("fullcoupon")) {
                 Log.d(TAG, "notCOUPON: " + command);
+                JsonObject couponJson = (JsonObject) json.get("coupon");
                 fullRecive(couponJson);
             }
         }
