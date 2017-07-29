@@ -437,14 +437,14 @@
         
     });
 
-    $("#allCheck").on("change", function(){
+    $("#allCheck").change(function(){
 
         if($("#allCheck").is(':checked') == true){
 
-         $(".basket .goodsCheck").attr("checked", true);
+         $(".basket .goodsCheck").prop("checked", true);
 
         }else{
-             $(".basket .goodsCheck").attr("checked", false);
+             $(".basket .goodsCheck").prop("checked", false);
         }
 
     });
