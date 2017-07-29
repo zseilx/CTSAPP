@@ -88,7 +88,7 @@ import scts.wdb.yjc.scts.hardwaremanager.SensorM;
                     toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Log.d("클클클 릭릭릭", "로고클릭됨");
+
                             webView.loadUrl(MAIN_URL);
                             getIntent().removeExtra("coupon");
 
@@ -119,8 +119,6 @@ import scts.wdb.yjc.scts.hardwaremanager.SensorM;
                     webView.getSettings().setJavaScriptEnabled(true);
                     webView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
                     webView.getSettings().setLoadWithOverviewMode(true);
-
-                    webView.addJavascriptInterface(new JSObject(), "sampleAndroid");
 
                     webView.setWebViewClient(new WebViewClientTest());
                     webView.loadUrl(MAIN_URL);
@@ -227,13 +225,6 @@ import scts.wdb.yjc.scts.hardwaremanager.SensorM;
 
                 }
 
-                public void testCoupon() {
-                    String data = "{\"coupon_dscnt\":\"30%\",\"status\":\"SUCCESS\",\"command\":\"fullcoupon\",\"coupon_cntnts\":\"안드로이드 쿠폰 수신용 첫번째 테스트 쿠폰입니다.\",\"coupon_code\":2,\"coupon_begin_de\":\"6월 22, 2017\",\"coupon_nm\":\"첫시험쿠폰\"}";
-
-
-                    webView.loadUrl("javascript:coupon('"+ data +"')");
-                }
-
                 @Override
                 public void onBackPressed() {
                     long tempTime        = System.currentTimeMillis();
@@ -246,9 +237,6 @@ import scts.wdb.yjc.scts.hardwaremanager.SensorM;
                         if(getIntent().getExtras() != null){
                             getIntent().removeExtra("coupon");
                         }
-
-
-
 
                     }
 
@@ -355,22 +343,6 @@ import scts.wdb.yjc.scts.hardwaremanager.SensorM;
                         mAdapter.disableForegroundDispatch(this);
                     }
                 }
-
-                class JSObject {
-
-
-                        @JavascriptInterface
-                        public void delivery() {
-
-                        }
-
-
-
-
-
-
-                }
-
                 class WebViewClientTest extends WebViewClient{
                     @Override
                     public void onPageFinished(WebView view, String url){
@@ -383,9 +355,6 @@ import scts.wdb.yjc.scts.hardwaremanager.SensorM;
                         point = sp.getString("point", "0");
 
                         String bhf_code = sp.getString("bhf_code", "2");
-
-
-
 
                         webView.loadUrl("javascript:setId('"+str+"', '"+point+"', '"+bhf_code+"')");
 
