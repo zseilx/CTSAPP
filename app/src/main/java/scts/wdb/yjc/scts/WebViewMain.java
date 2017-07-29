@@ -362,9 +362,6 @@ import scts.wdb.yjc.scts.hardwaremanager.SensorM;
                         @JavascriptInterface
                         public void delivery() {
 
-                            getIntent().getExtras().clear();
-
-
                         }
 
 
