@@ -84,7 +84,19 @@ import scts.wdb.yjc.scts.hardwaremanager.SensorM;
                     setContentView(R.layout.activity_web_view_main);
                     Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
                     setSupportActionBar(toolbar);
-                    toolbar.setLogo(R.drawable.logo);
+                    toolbar.setNavigationIcon(R.drawable.logo);
+                    toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Log.d("클클클 릭릭릭", "로고클릭됨");
+                            webView.loadUrl(MAIN_URL);
+                            getIntent().removeExtra("coupon");
+
+                        }
+                    });
+
+
+
 
 
                     sp = getSharedPreferences("test", 0);
@@ -230,6 +242,14 @@ import scts.wdb.yjc.scts.hardwaremanager.SensorM;
                     if (webView.canGoBack()) {
 
                         webView.goBack();
+
+                        if(getIntent().getExtras() != null){
+                            getIntent().removeExtra("coupon");
+                        }
+
+
+
+
                     }
 
                     if(webView.canGoBack() == false){
@@ -342,6 +362,7 @@ import scts.wdb.yjc.scts.hardwaremanager.SensorM;
                         @JavascriptInterface
                         public void delivery() {
 
+                            getIntent().getExtras().clear();
 
 
                         }
@@ -376,6 +397,8 @@ import scts.wdb.yjc.scts.hardwaremanager.SensorM;
                             coupon = getIntent().getExtras().getString("coupon").toString();
 
                             webView.loadUrl("javascript:couponHere("+ coupon +")");
+
+
 
                         }else {
                             Log.d("log", "no");
