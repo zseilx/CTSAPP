@@ -7,8 +7,7 @@
     <script src="js/jquery-3.2.1.min.js"></script>
     <script src="js/IPSetting.js"></script>
     <script src="js/searchProduct.js"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+ 
     <title>물품 상세보기</title>
    <style>
        body{
@@ -23,6 +22,7 @@
             height: 55px;
             color: white;
             margin-bottom: 15px;
+             overflow-x : hidden; 
         
             
         }
@@ -89,7 +89,7 @@
               
                 $("#list").append($("<div></div>").addClass("goods"));
                 $(".goods").append($("<h4></h4>").text(data.goodsOne.goods_nm));
-                $(".goods").append($("<p></p>").text(data.goodsOne.goods_pc));
+                $(".goods").append($("<p></p>").text(data.goodsOne.goods_pc+"원"));
                 $(".goods").append($("<hr />"));
 
                 for(var i=0; i < data.drawingList.length; i++){
