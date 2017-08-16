@@ -7,6 +7,8 @@
     <script src="js/jquery-3.2.1.min.js"></script>
     <script src="js/IPSetting.js"></script>
     <script src="js/searchProduct.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
  
     <title>물품 상세보기</title>
    <style>
@@ -22,8 +24,7 @@
             height: 55px;
             color: white;
             margin-bottom: 15px;
-             overflow-x : hidden; 
-        
+          
             
         }
         #title > img{
@@ -113,8 +114,8 @@
                             attr({
                                     "data-lo" : data.drawingList[i].drw_code +""+j+""+k,
                                     "drw_code":  data.drawingList[i].drw_code,
-                                    "tile_crdnt_y" : j,
-                                    "tile_crdnt_x" : k
+                                    "tile_crdnt_y" : k,
+                                    "tile_crdnt_x" : j
                                 
                                 });
                             

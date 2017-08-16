@@ -41,7 +41,8 @@
 
         .recommandProduct{
             width: 97%;
-            height: 100px;
+            padding: 5px;
+            height: 80px;
             border: 0.2px solid black;
             margin-bottom: 10px;
         }
@@ -88,10 +89,10 @@
                 var length = product.data.length;
                 $("#list").css("padding", "20px")
                 for(var i=0; i <  length; i++){
-                    $("#list").append($("<div style='margin-bottom:15px;border:1px solid black;'></div>").addClass("product").attr("data-product", product.data[i].goods_code));
-                    $(".product[data-product="+product.data[i].goods_code +"]").append($("<img style='margin:10px; 0px; 10px; 10px;'/>").attr("src", "img/product.png").addClass("productImg"));
-                    $(".product[data-product="+product.data[i].goods_code +"]").append($("<span style='margin-left:15px;font-size:25px;'></span>").text(product.data[i].goods_nm));
-                    $(".product[data-product="+product.data[i].goods_code +"]").append($("<p></p>").addClass("price").text(product.data[i].goods_pc+"원").addClass("price"));
+                    $("#list").append($("<div style='margin-bottom:15px;border:1px solid black;'></div>").addClass("product recommandProduct").attr("data-product", product.data[i].goods_code));
+                    $(".product[data-product="+product.data[i].goods_code +"]").append($("<img style='margin:10px; 0px; 10px; 10px;'/>").attr("src", "img/product.png").addClass("recommandImg"));
+                    $(".product[data-product="+product.data[i].goods_code +"]").append($("<span style='margin-left:15px;'></span>").text(product.data[i].goods_nm));
+                    $(".product[data-product="+product.data[i].goods_code +"]").append($("<span style='float:right; margin-right:10px;'></span>").text(product.data[i].goods_pc+"원"));
                 }
                
             }
