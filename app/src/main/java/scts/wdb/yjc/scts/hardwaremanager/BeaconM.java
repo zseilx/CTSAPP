@@ -30,6 +30,9 @@ public class BeaconM{
     private static final UUID BEACON_UUID = UUID.fromString("20CAE8A0-A9CF-11E3-A5E2-0800200C9A66");
     private Region region = new Region("ranged region", BEACON_UUID, null, null);
 
+    // 신호가 튈 수 있기 때문에 사용하는 변수로서
+    // 비콘이 사라진 걸 한번 체크하는 함수
+    private boolean sparkchk = false;
     // 그전에 가장 가까운 비콘
     private Beacon oldnearBeacon = null;
     // 현재 가장 가까운 비콘(감지시점)
@@ -96,18 +99,30 @@ public class BeaconM{
 
                     int rssi = list.get(0).getRssi();
 
-                    if (rssi > -90 && rssi < -75) {
+                    if (rssi > -70 && rssi < -50) {
                         currentNearBeacon = list.get(0);
                         //showToast(mContext, "beacon" + list.get(0).toString());
                         //Toast.makeText(mContext, "beacon" + list.get(0).toString(), Toast.LENGTH_SHORT).show();
+                        sparkchk = false;
                     }
+                    // 스파크 체크, (신호 튀는 것 또는 신호 감지 이상을 대비하기 위해 한번 더 체크함
+                    else if (sparkchk != true) {
+                        sparkchk = true;
+                    }
+                    // 스파크 체크를 하고 난 뒤
                     else {
+                        sparkchk = false;
                         currentNearBeacon = null;
-                        beaconCnt = 0;
                     }
                 }
                 else {
+                    sparkchk = false;
                     currentNearBeacon = null;
+                }
+
+                // 가까운 비콘이 없다면 비콘 감지 갯수를 0으로 만들어 버려서 logic이 구동 안되게 막아버림
+                if(currentNearBeacon == null) {
+                    beaconCnt = 0;
                 }
                 logic();
 
