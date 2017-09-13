@@ -89,6 +89,13 @@ public class BeaconSet extends AsyncTask<String, String, String> {
 
 
             if( json.get("tile") != null) {
+                SharedPreferences sp = mContext.getSharedPreferences("test", 0);
+                SharedPreferences.Editor editor = sp.edit();
+                String standingTile = json.get("tile").toString();
+                Log.d("BeaconSet: ", "standingtile : " + standingTile);
+                editor.putString("standingtile", standingTile);
+                editor.commit();
+
                 JsonObject tileJson = (JsonObject) json.get("tile");
                 tileDataRecive(tileJson);
             }
@@ -148,4 +155,5 @@ public class BeaconSet extends AsyncTask<String, String, String> {
             e.printStackTrace();
         }
     }
+
 }

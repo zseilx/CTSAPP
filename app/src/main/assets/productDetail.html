@@ -1,17 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-     <meta charset="UTF-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <script src="js/jquery-3.2.1.min.js"></script>
     <script src="js/IPSetting.js"></script>
     <script src="js/searchProduct.js"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
- 
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
     <title>물품 상세보기</title>
-   <style>
+    <style>
        body{
             background:#FFFFF6;
            
@@ -66,6 +67,7 @@
      
   
        
+
     </style>
     <script>
     $(document).ready(function(){
@@ -142,9 +144,10 @@
                     if(data.goodsOne.drw_code ==  drw_code && data.goodsOne.tile_crdnt_y == tile_crdnt_y && data.goodsOne.tile_crdnt_x == tile_crdnt_x ){
                                 $(this).css("background-color", "rgba(241, 95, 95, 0.5)");
                     }
-                })
-            }
+                });
+                window.HybridApp.setMap();
 
+            }
 
         });
     });
@@ -191,20 +194,21 @@
         }
 
     }
+
     </script>
 </head>
 
 <body>
-    <div id="title">
-     
-       <img src="img/searchProduct.png" width="40px" height="40px">
-       <h2>물품 상세보기</h2>
-    
-   </div>
+<div id="title">
 
-   <div id="list">
-   
-   </div>
-    
+    <img src="img/searchProduct.png" width="40px" height="40px">
+    <h2>물품 상세보기</h2>
+
+</div>
+
+<div id="list">
+
+</div>
+
 </body>
 </html>
