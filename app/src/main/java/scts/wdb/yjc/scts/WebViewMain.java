@@ -476,8 +476,8 @@ public class WebViewMain extends AppCompatActivity{
                     String tileStr = sp.getString("standingTile", "");
                     JsonObject tileJson = new Gson().fromJson(tileStr, JsonObject.class);
                     try {
-                        Log.d("WebViewMain: ", "standingtile: " + tileStr);
-                        Log.d("WebViewMain: ", "standingtile: " + tileJson.toString());
+                        Log.d("WebViewMain: ", "standingStr: " + tileStr);
+                        Log.d("WebViewMain: ", "standingJson: " + tileJson.toString());
                         setTile(tileJson);
                     } catch (Exception e) {
                         e.printStackTrace();
