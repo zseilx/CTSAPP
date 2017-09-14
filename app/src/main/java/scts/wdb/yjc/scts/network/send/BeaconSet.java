@@ -19,11 +19,15 @@ import static android.content.ContentValues.TAG;
  */
 
 public class BeaconSet extends AsyncTask<String, String, String> {
-
     private Context mContext;
+
+    private SharedPreferences sp;
+
+    private SharedPreferences.Editor editor;
 
     public BeaconSet(Context mContext) {
         this.mContext = mContext;
+        sp = mContext.getSharedPreferences("test", 0);
     }
 
     protected  void onPreExcute(){
@@ -80,20 +84,19 @@ public class BeaconSet extends AsyncTask<String, String, String> {
 
 
             if( json.get("bhf_code") != null) {
-                SharedPreferences sp = mContext.getSharedPreferences("test", 0);
-                SharedPreferences.Editor editor = sp.edit();
+                editor = sp.edit();
                 String bhf_code = json.get("bhf_code").getAsString().toString();
+                Log.d("BeaconSet: ", "bhf_code : " + bhf_code);
                 editor.putString("bhf_code", bhf_code);
                 editor.commit();
             }
 
 
             if( json.get("tile") != null) {
-                SharedPreferences sp = mContext.getSharedPreferences("test", 0);
-                SharedPreferences.Editor editor = sp.edit();
+                editor = sp.edit();
                 String standingTile = json.get("tile").toString();
-                Log.d("BeaconSet: ", "standingtile : " + standingTile);
-                editor.putString("standingtile", standingTile);
+                Log.d("BeaconSet: ", "standingTile : " + standingTile);
+                editor.putString("standingTile", standingTile);
                 editor.commit();
 
                 JsonObject tileJson = (JsonObject) json.get("tile");

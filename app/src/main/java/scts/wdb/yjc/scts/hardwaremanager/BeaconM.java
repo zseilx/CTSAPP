@@ -99,7 +99,7 @@ public class BeaconM{
 
                     int rssi = list.get(0).getRssi();
 
-                    if (rssi > -70 && rssi < -50) {
+                    if (rssi > -75 && rssi < -50) {
                         currentNearBeacon = list.get(0);
                         //showToast(mContext, "beacon" + list.get(0).toString());
                         //Toast.makeText(mContext, "beacon" + list.get(0).toString(), Toast.LENGTH_SHORT).show();
