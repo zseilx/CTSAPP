@@ -194,7 +194,7 @@ public class BeaconM{
         // 제이슨 형태 확인
         //Toast.makeText(mContext, "logic: 서버전송 stayTimeMil = " + json, Toast.LENGTH_LONG).show();
         // 디버깅 json
-        showToast(mContext, json.toString());
+        //showToast(mContext, json.toString());
         // 서버로 전송시킴
         BeaconSet networkTask = new BeaconSet(mContext);
 
@@ -261,7 +261,7 @@ public class BeaconM{
                         stayTimeMil += (int) (getCurrent_Time() - currentTime);
                         currentTime = 0;
                         //Toast.makeText(mContext, "logic: 멈춘 시간 계산 stayTimeMil = " + stayTimeMil, Toast.LENGTH_LONG).show();
-                        showToast(mContext, "멈춘시간 계산 stayTimeMil = " + stayTimeMil);
+                        //showToast(mContext, "멈춘시간 계산 stayTimeMil = " + stayTimeMil);
                         Log.d(TAG, "logic: 움직였는데 그전과 같은 비콘 stayTimeMil = " + stayTimeMil); // 디버깅용 시스템 로그
                     }
                 }
@@ -294,7 +294,7 @@ public class BeaconM{
                 if(oldnearBeacon != null && currentTime == 0) {
                     currentTime = getCurrent_Time();
                     //Toast.makeText(mContext, "logic: 멈춘 시간 저장", Toast.LENGTH_LONG).show();
-                    showToast(mContext, "멈춘시간 계산22 stayTimeMil = " + stayTimeMil);
+                    //showToast(mContext, "멈춘시간 계산22 stayTimeMil = " + stayTimeMil);
                     Log.d(TAG, "logic: 지금 멈춰서 시간계산 시작한다" ); // 디버깅용 시스템 로그
                     Log.d(TAG, "oldBeacon = " + oldnearBeacon.toString() ); // 디버깅용 시스템 로그
                 }
