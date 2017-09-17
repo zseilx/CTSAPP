@@ -57,12 +57,15 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+
   @Override
     protected void onResume() {
         super.onResume();
         // 블루투스 권한 및 활성화 코드
        SystemRequirementsChecker.checkWithDefaultDialogs(this);
     }
+
+
 
 
 
@@ -179,7 +182,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
 
                 // 디버깅용
-                Toast.makeText(getApplicationContext(), "로그인 성공!!!!" + "저장된 아이디 : " + sp.getString("user_id",""), Toast.LENGTH_LONG).show();
+
                 Log.d(TAG, "프리퍼런스 설정 완료");
                 Log.d(TAG, "저장된 아이디 : " + sp.getString("user_id",""));
 
@@ -189,7 +192,7 @@ public class MainActivity extends AppCompatActivity {
                 // 실제 로그인 실패햇을때 아이디 비밀번호 틀렷다는 창을 보여줘야하는 부분을 코딩해야함
 
                 // 디버깅용
-                Toast.makeText(getApplicationContext(), "로그인 실패!!!!" + "입력 아이디 : " + user_id, Toast.LENGTH_LONG).show();
+
                 Log.d(TAG, "로그인 실패함");
                 Log.d(TAG, "입력 아이디 : " + user_id);
             }
@@ -239,8 +242,6 @@ public class MainActivity extends AppCompatActivity {
             SharedPreferences.Editor editor = sp.edit();
             editor.putString("point", s);
             editor.commit();
-
-            Toast.makeText(getApplicationContext(), s, Toast.LENGTH_LONG).show();
 
 
         }

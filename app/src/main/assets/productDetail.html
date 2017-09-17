@@ -112,7 +112,7 @@
                         var tileRow = $("<div></div>");
 
                         for(var k=0; k<data.drawingList[i].size_x; k++) {
-                            var tileItem = $("<div>"+ data.drawingList[i].drw_code + "" + j +"" +k +"</div>").addClass("tile").
+                            var tileItem = $("<div></div>").addClass("tile").
                             attr({
                                     "data-lo" : data.drawingList[i].drw_code +""+j+""+k,
                                     "drw_code":  data.drawingList[i].drw_code,
@@ -134,15 +134,21 @@
                    
                 }
 
+
+
                 $(".tile").each(function(){
                     var drw_code = $(this).attr("drw_code");
                     var tile_crdnt_x = $(this).attr("tile_crdnt_x");
                     var tile_crdnt_y = $(this).attr("tile_crdnt_y");
 
-                    console.log(drw_code);
-
                     if(data.goodsOne.drw_code ==  drw_code && data.goodsOne.tile_crdnt_y == tile_crdnt_y && data.goodsOne.tile_crdnt_x == tile_crdnt_x ){
+                                
+                                $(this).css("font-size", "50px");
+                                $(this).css("text-align", "center");
+                             
+                                $(this).css("font-weight", "bold");
                                 $(this).css("background-color", "rgba(241, 95, 95, 0.5)");
+                                $(this).text("상품");
                     }
                 });
                 window.HybridApp.setMap();
@@ -153,35 +159,44 @@
     });
 
     function comeBeacon(data){
+
+       $(".tile").empty();
         
         if(data != null){
+            
             $(".tile").each(function(){
                 var drw_code = $(this).attr("drw_code");
                 var tile_crdnt_y = $(this).attr("tile_crdnt_y");
                 var tile_crdnt_x = $(this).attr("tile_crdnt_x");
 
+               
                 if(data.DRW_CODE == drw_code && data.TILE_CRDNT_X == tile_crdnt_x && data.TILE_CRDNT_Y == tile_crdnt_y){
                   
+                        
+                        $(this).css("font-size", "50px");
+                         $(this).css("text-align", "center");
+                         $(this).css("font-weight", "bold");
+
                      if($(this).css("background-color") == "rgba(241, 95, 95, 0.5)"){
                         $(this).css("background-color", "rgba(47, 157, 39, 0.5)");
                         $(this).text("도착!");
                     }else if($(this).css("background-color") == "rgba(47, 157, 39, 0.5)"){
-                       $(this).css("background-color", "rgba(47, 157, 39, 0.5)");
+                       $(this).css("background-color", "rgba(47, 157, 39, 0.5)"); //초록
                        $(this).text("도착!");
                     }
                     else{
-                        $(this).css("background-color", "rgba(0, 84, 255, 0.5)");
-                        $(this).text("");
+                        $(this).css("background-color", "rgba(0, 84, 255, 0.5)"); // 파랑
+                        $(this).text("고객");
                     }
 
                 }else{
                     if($(this).css("background-color") == "rgba(241, 95, 95, 0.5)"){
-                        $(this).css("background-color", "rgba(241, 95, 95, 0.5)");
-                        $(this).text("");
+                        $(this).css("background-color", "rgba(241, 95, 95, 0.5)"); // 빨강
+                        $(this).text("상품");
                         
                     }else if($(this).css("background-color") == "rgba(47, 157, 39, 0.5)"){
                         $(this).css("background-color", "rgba(241, 95, 95, 0.5)");
-                        $(this).text("");
+                        $(this).text("상품");
                     }
                     else{
                         $(this).css("background-color", "rgba(0, 84, 255, 0)");
